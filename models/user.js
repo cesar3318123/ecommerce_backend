@@ -30,7 +30,7 @@ const User = sequelize.define('User',{
 
 },{
       // Hook (gancho): se ejecuta automáticamente **antes de crear** un nuevo usuario
-      Hooks: {
+      hooks: {
     beforeCreate: async (user) => {
       // Generamos un "salt" (valor aleatorio) para encriptar la contraseña
       const salt = await bcrypt.genSalt(10);
