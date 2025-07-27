@@ -11,7 +11,7 @@ const sequelize = process.env.DATABASE_URL
       dialect: 'mysql',
       dialectOptions: {
         ssl: {
-          rejectUnauthorized: true,
+          rejectUnauthorized: false,
         },
       },
     })
