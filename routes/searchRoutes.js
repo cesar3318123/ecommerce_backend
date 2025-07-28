@@ -10,7 +10,7 @@ const router = express.Router();
 //const { SearchwithGoogleAI } = require('../controllers/searchControllers');
 
 // Importamos el controlador para el registro y autenticación de usuarios
-const { registerUser, authenticateUser } = require('../controllers/userControllers');
+const { registerUser, authenticateUser, getUserByEmail } = require('../controllers/userControllers');
 
 
 // Definimos la ruta POST para buscar con Google AI
@@ -21,5 +21,8 @@ router.post('/register', registerUser);
 
 // Definimos la ruta POST para autenticar usuarios
 router.post('/login', authenticateUser);
+
+// Definimos la ruta GET para obtener un usuario por su email
+router.get('/user/:email', getUserByEmail);
 
 module.exports = router;

@@ -59,6 +59,27 @@ async function authenticateUser(req, res) {
     }
 };
 
+//Función para obtener un usuario por su email
+async function getUserByEmail(req, res) {
+    const { email } = req.params;
+
+    try {
+        // Buscamos al usuario por su email en la base de datos
+        const user = await User.findOne({ where: { email } });
+
+        // Si no se encuentra el usuario, respondemos con un estado 404 (no encontrado)
+        if (!user) {
+            return res.status(404).json({ message: 'Usuario no encontrado' });
+        }
+
+        // Respondemos con los datos del usuario
+        res.status(200).json(user);
+    } catch (error) {
+        // Si ocurre un error, lo mostramos en la consola y respondemos con un estado 500 (error interno del servidor)
+        console.error('Error al obtener el usuario:', error);
+        res.status(500).json({ message: 'Error al obtener el usuario', error: error.message });
+    }
+}
 
 // Exportamos la función para que pueda ser usada en las rutas
-module.exports = {registerUser, authenticateUser};
+module.exports = {registerUser, authenticateUser, getUserByEmail};
