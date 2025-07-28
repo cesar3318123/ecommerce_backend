@@ -7,6 +7,7 @@ const bcrypt = require('bcrypt');
 // Función asincrónica para registrar un nuevo usuario
 async function registerUser(req, res) {
     // Extraemos los datos del cuerpo de la solicitud
+    console.log("📨 Petición recibida:", req.body);
     const { username, email, password } = req.body;
 
 
@@ -16,6 +17,7 @@ async function registerUser(req, res) {
 
         // Si se crea exitosamente, respondemos con un estado 201 (creado) y el ID del nuevo usuario
         res.status(201).json({ message: 'Usuario creado exitosamente', userId: newUser.id });
+        console.log("✅ Usuario registrado con éxito");
     } catch (error) {
         // Si ocurre un error (como un email duplicado), lo mostramos en la consola
         console.error('Error al crear el usuario:', error);
