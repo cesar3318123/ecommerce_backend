@@ -14,8 +14,11 @@ routermd.get("/mercadolibre", async (req, res) => {
 
 
     try {
+
+        console.log("URL final:", "https://api.mercadolibre.com/sites/MLM/search", "Query:", query);
+
         // Realizamos una petición a la API de MercadoLibre
-        const response = await axios.get(`https://api.mercadolibre.com/sites/MLM/search`, {
+        const response = await axios.get(`https://api.mercadolibre.com/sites/MLM/search`,{
             params: { q: query }, // Pasamos el parámetro de búsqueda
               headers: {
                 "User-Agent": "MiEcommerceApp/1.0"
