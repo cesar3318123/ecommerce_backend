@@ -14,10 +14,10 @@ routermd.get('/callback', async (req, res) => {
   try {
     const response = await axios.post("https://api.mercadolibre.com/oauth/token", {
       grant_type: "authorization_code",
-      client_id: "244032937411560",
-      client_secret: "INVluMxb0A20lXnjREmyFhChMMpzkRCU",
+      client_id: "3300144769795289",
+      client_secret: "hV0MA82ct19IOVeJsOb0FqEO1NahloO2",
       code: code,
-      redirect_uri: "https://ecommerce-web-6lz9.onrender.com/api/callback"
+      redirect_uri: "https://ecommercebackend-production-8245.up.railway.app/api/callback"
     }, {
       headers: { "Content-Type": "application/json" }
     });
@@ -78,8 +78,8 @@ async function refreshAccessToken() {
   try {
     const response = await axios.post("https://api.mercadolibre.com/oauth/token", {
       grant_type: "refresh_token",
-      client_id: "244032937411560",
-      client_secret: "INVluMxb0A20lXnjREmyFhChMMpzkRCU",
+      client_id: "3300144769795289",
+      client_secret: "hV0MA82ct19IOVeJsOb0FqEO1NahloO2",
       refresh_token: refreshToken
     }, {
       headers: { "Content-Type": "application/json" }
