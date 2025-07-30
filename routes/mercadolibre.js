@@ -17,7 +17,7 @@ routermd.get('/callback', async (req, res) => {
       client_id: "244032937411560",
       client_secret: "INVluMxb0A20lXnjREmyFhChMMpzkRCU",
       code: code,
-      redirect_uri: "https://ecommerce-web-6lz9.onrender.com/api/callback"
+      redirect_uri: "https://ecommercebackend-production-8245.up.railway.app/api/callback"
     }, {
       headers: { "Content-Type": "application/json" }
     });
