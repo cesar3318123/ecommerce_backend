@@ -36,9 +36,23 @@ routermd.get("/mercadolibre", async (req, res) => {
         // Devolvemos los resultados de la búsqueda
         res.json(results);
     } catch (error) {
-        console.error("Error al buscar en MercadoLibre:", error);
-        res.status(500).json({ error: "Error al buscar en MercadoLibre" });
+    console.error("Error al buscar en MercadoLibre:");
+
+    if (error.response) {
+        // Error con respuesta del servidor (como 403, 404, etc.)
+        console.error("Status:", error.response.status);
+        console.error("Data:", error.response.data);
+    } else if (error.request) {
+        // No hubo respuesta (problemas de red)
+        console.error("No hubo respuesta del servidor");
+        console.error(error.request);
+    } else {
+        // Otro error
+        console.error("Error al hacer la petición:", error.message);
     }
+
+    res.status(500).json({ error: "Error al buscar en MercadoLibre" });
+}
 
 })
 
