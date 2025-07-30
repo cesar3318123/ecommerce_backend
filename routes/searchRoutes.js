@@ -7,14 +7,14 @@ const express = require('express');
 // Este controlador contiene la lógica para interactuar con el servicio de Google AI
 const router = express.Router();
 // Aqui se manej la la ruta para buscar con Google AI
-//const { SearchwithGoogleAI } = require('../controllers/searchControllers');
+const { SearchwithGoogleAI } = require('../controllers/searchControllers');
 
 // Importamos el controlador para el registro y autenticación de usuarios
 const { registerUser, authenticateUser, getUserByEmail } = require('../controllers/userControllers');
 
 
 // Definimos la ruta POST para buscar con Google AI
-//router.post('/google-ai', SearchwithGoogleAI);
+router.post('/google-ai', SearchwithGoogleAI);
 
 // Definimos la ruta POST para el registro de usuarios
 router.post('/register', registerUser);

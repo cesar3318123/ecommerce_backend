@@ -11,8 +11,8 @@ require('dotenv').config();
 // --- Configuración de Vertex AI ---
 
 const project_id = process.env.GOOGLE_CLOUD_PROJECT_ID;
-const location = process.env.GOOGLE_CLOUD_LOCATION || 'southamerica-east1'; // Puedes cambiar 'us-central1' a tu región preferida
-const model_id = 'gemini-pro'; // O el ID de tu modelo específico de Vertex AI (por ejemplo, 'gemini-1.0-pro')
+const location = process.env.GOOGLE_CLOUD_LOCATION || 'southamerica-east1';
+const model_id = 'gemini-pro';
 
 
 
