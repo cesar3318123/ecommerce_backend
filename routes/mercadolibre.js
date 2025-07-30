@@ -52,7 +52,7 @@ routermd.get("/mercadolibre", async (req, res) => {
     const response = await axios.get("https://api.mercadolibre.com/sites/MLM/search", {
       params: { q: query },
       headers: {
-        Authorization: `Bearer ${accessToken}`,
+        //Authorization: `Bearer ${accessToken}`,
         "User-Agent": "MiEcommerceApp/1.0"
       }
     });
