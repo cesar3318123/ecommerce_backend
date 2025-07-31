@@ -5,8 +5,6 @@ const User = require('../models/user');
 const bcrypt = require('bcrypt');
 
 
-const { act } = require('react');
-
 // Función asincrónica para registrar un nuevo usuario
 async function registerUser(req, res) {
     // Extraemos los datos del cuerpo de la solicitud
