@@ -4,6 +4,9 @@ const User = require('../models/user');
 // Importamos bcrypt para comparar la contraseña ingresada con la almacenada
 const bcrypt = require('bcrypt');
 
+
+const { act } = require('react');
+
 // Función asincrónica para registrar un nuevo usuario
 async function registerUser(req, res) {
     // Extraemos los datos del cuerpo de la solicitud
@@ -80,6 +83,12 @@ async function getUserByEmail(req, res) {
         res.status(500).json({ message: 'Error al obtener el usuario', error: error.message });
     }
 }
+
+
+
+
+
+
 
 // Exportamos la función para que pueda ser usada en las rutas
 module.exports = {registerUser, authenticateUser, getUserByEmail};
