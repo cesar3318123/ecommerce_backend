@@ -1,7 +1,7 @@
 // googleAIService.js
 
 const { VertexAI } = require('@google-cloud/vertexai'); // Importar la librería de Vertex AI
-const { GoogleAuth} = require('google-auth-library'); //Importar la librería de autenticación de Google
+// const { GoogleAuth} = require('google-auth-library'); //Importar la librería de autenticación de Google
 
 console.log("ENV:", process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON);
 
@@ -13,17 +13,18 @@ if (!rawCreds) {
 
 const credentials = JSON.parse(rawCreds);
 
-const auth = new GoogleAuth({
-  credentials,
-  scopes: 'https://www.googleapis.com/auth/cloud-platform' // Configurar el alcance de autenticación
-})
-
 const project = 'ecommerceai-467408'; //ID del proyecto de Google Cloud
 const location = 'us-central1'; //Ubicación del servicio
 
 // Instanciar el cliente Vertex AI
-const vertexAI = new VertexAI({ project: project, location: location, auth });
-
+const vertexAI = new VertexAI({
+    project: project,
+    location: location,
+    credentials: {
+        client_email: credentials.client_email,
+        private_key: credentials.private_key,
+    },
+});
 // Obtener el modelo generativo
 const model = vertexAI.getGenerativeModel({
   model: 'gemini-2.0-flash-lite-001', // Usa el modelo correcto según disponibilidad
