@@ -3,10 +3,16 @@
 const { VertexAI } = require('@google-cloud/vertexai'); // Importar la librería de Vertex AI
 const { GoogleAuth} = require('google-auth-library'); //Importar la librería de autenticación de Google
 
-const credenctials = JSON.parse(process.env.GOOGLE_APPLICATION_CREDENTIALS); // Obtener las credencialaes desde las variables de entorno
+const rawCreds = process.env.GOOGLE_APPLICATION_CREDENTIALS;
+
+if (!rawCreds) {
+  throw new Error('No se encontró la variable GOOGLE_APPLICATION_CREDENTIALS');
+}
+
+const credentials = JSON.parse(rawCreds);
 
 const auth = new GoogleAuth({
-  credenctials,
+  credentials,
   scopes: 'https://www.googleapis.com/auth/cloud-platform' // Configurar el alcance de autenticación
 })
 
