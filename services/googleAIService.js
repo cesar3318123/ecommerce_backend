@@ -11,6 +11,7 @@ if (!rawCreds) {
   throw new Error('No se encontró la variable GOOGLE_APPLICATION_CREDENTIALS_JSON');
 }
 
+
 const credentials = JSON.parse(rawCreds);
 
 const project = 'ecommerceai-467408'; //ID del proyecto de Google Cloud
