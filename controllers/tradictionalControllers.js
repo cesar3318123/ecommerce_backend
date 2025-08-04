@@ -11,13 +11,13 @@ async function searchproducts(req, res) {
     }
 
     try {
-        const response = await axios.get('https://world.openfoodfacts.org/cgi/search.pl',{
+        const response = await axios.get(`https://world.openfoodfacts.org/cgi/search.pl`,{
             params: {
                 search_terms: query, // Término de búsqueda
                 search_simple: 1, //Sirve para indicar que es una búsqueda simple
                 action: 'process', // Acción a realizar
                 json: 1, // Formato de respuesta JSON
-                page_size: 5 // Número de resultados por página
+                page_size: 15 // Número de resultados por página
             },
             headers: {
                 'User-Agent': 'MiAppEcommerce/1.0 (wwww.cesar3318123@gmail.com)'
@@ -25,7 +25,23 @@ async function searchproducts(req, res) {
         });
 
 
-        const products = response.data.products.map(p => ({
+        const keywords = query.split(""); // Dividimos la consulta en palabras clave para filtrar los productos
+
+
+        //Aplicamos un filtro tradicional para obtener los productos
+        const filteredProducts = response.data.products.filter(
+            p => {
+                const name = p.product_name?.toLowerCase() || '';
+                const brand = p.brands?.toLowerCase() || '';
+                //return name.includes(query) || brand.includes(query); //Esta línea filtra los productos que contienen el término de búsqueda en el nombre o la marca
+                //Verificamos si alguna de las palabras clave está en el nombre o la marca del producto
+                return keywords.some(word => name.includes(word.toLowerCase()) || brand.includes(word.toLowerCase()))
+
+            }
+        );
+
+
+        const products = filteredProducts.map(p => ({
             nombre: p.product_name,
             marca: p.brands,
             imagen: p.image_url
