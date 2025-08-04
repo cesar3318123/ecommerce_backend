@@ -3,6 +3,8 @@
 const { VertexAI } = require('@google-cloud/vertexai'); // Importar la librería de Vertex AI
 const { GoogleAuth} = require('google-auth-library'); //Importar la librería de autenticación de Google
 
+console.log("ENV:", process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON);
+
 const rawCreds = process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON;
 
 if (!rawCreds) {
