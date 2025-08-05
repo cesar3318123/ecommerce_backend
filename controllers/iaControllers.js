@@ -9,8 +9,29 @@ async function generateContent(req, res) {
 
   try {
     // Aquí llamas a la función que genera contenido
-    const result = await generateContentFromAI(prompt); 
-    res.json({ result });
+    //search_simple funciona para busquedas simples, action=process para procesar la búsqueda y json=1 para obtener la respuesta en formato JSON
+    const openFoodUrl = `https://world.openfoodfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(prompt)}&search_simple=1&action=process&json=1`; // URL de Open Food Facts con el término de búsqueda
+    const openFoodResponse = await axios.get(openFoodUrl); // Realizar la solicitud a Open Food Facts
+    const products = openFoodResponse.data.products || []; // Extraer los productos de la respuesta
+
+    //Preparar texto con productos para IA
+    //Slice sirve para limitar la cantidad de productos a 5
+    //.join sirve para unir los productos en una sola cadena de texto, separados por saltos de línea
+    let productListText = products.slice(0, 5).map(p => `- ${p.product_name || 'Nombre no disponible'}`).join('\n');
+    if (!productListText) productListText = 'No se encontraron productos releventes.'; // Si no hay productos, indicar que no se encontraron
+
+    //Generar contenido con IA basado en Prompt y la lista de productos
+    const combinedPrompt = `El usuario pregunto: "${prompt}". Aqui hay una lista de productos relacionados:\n${productListText}\nPor favor, genera una descripción o recomendación para estos productos.`; // Combinar el prompt del usuaario con la lista de productos
+
+    const aiResult = await generateContentFromAI(combinedPrompt);
+
+
+    // Responder con datos combinados
+
+    res.json({
+      products: products.slice(0, 5), // primeros 5 productos para no saturar
+      aiResult,
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Error generando contenido' });
