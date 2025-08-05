@@ -1,4 +1,5 @@
 const { model } = require('../services/googleAIService');
+const axios = require('axios'); // Importar axios para hacer peticiones HTTP
 
 //Controller para manejar las peticiones de búsqueda con Google AI
 async function generateContent(req, res) {
