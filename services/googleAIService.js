@@ -4,6 +4,9 @@ const { VertexAI } = require('@google-cloud/vertexai'); // Importar la librería
 // const { GoogleAuth} = require('google-auth-library'); //Importar la librería de autenticación de Google
 require('dotenv').config(); // Cargar las variables de entorno desde el archivo .env
 
+const fs = require('fs'); // Importar el módulo de sistema de archivos para leer las credenciales
+const path = require('path'); // Importar el módulo de ruta para manejar rutas de archivos
+
 console.log("ENV:", process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON);
 
 const rawCreds = process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON;
@@ -12,15 +15,19 @@ if (!rawCreds) {
   throw new Error('No se encontró la variable GOOGLE_APPLICATION_CREDENTIALS_JSON');
 }
 
-
-
-
 let credentials;
 try {
   credentials = JSON.parse(rawCreds);
 } catch (err) {
   console.error('Error al parsear las credenciales:', err);
   throw err;
+}
+
+
+if (credentials) {
+  const filePath = path.join('/tmp', 'keyfile.json');
+  fs.writeFileSync(filePath, JSON.stringify(credentials));
+  process.env.GOOGLE_APPLICATION_CREDENTIALS = filePath;
 }
 
 const project = 'ecommerceai-467408'; //ID del proyecto de Google Cloud
