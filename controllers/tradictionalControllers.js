@@ -12,8 +12,12 @@ async function searchproducts(req, res) {
         return res.status(400).json({ error:' Falta el parametro q en la consulta'});
     }
 
+    console.log('Buscando productos con la consulta:', query); // Log para depuración
+
     // Traducimos la consulta de español a inglés
     const translatedQuery = await translateTextEnglish(query); // Traducimos la consulta al inglés
+
+    console.log('Consulta traducida a inglés:', translatedQuery); // Log para depuración
 
 
     try {
