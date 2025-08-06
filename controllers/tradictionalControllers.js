@@ -1,7 +1,6 @@
 // Importamos axios para hacer peticiones HTTP
 const axios = require('axios'); // axios sirve para hacer peticiones HTTP de manera sencilla, como si fuera fetch pero con más funcionalidades y mejor manejo de errores
-// Importamos las funciones de translate.js para traducir textos
-const { translateTextEnglish, translateTextToSpanish } = require('../services/translate'); // 
+
 
 
 async function searchproducts(req, res) {
@@ -14,8 +13,6 @@ async function searchproducts(req, res) {
 
     console.log('Buscando productos con la consulta:', query); // Log para depuración
 
-    // Traducimos la consulta de español a inglés
-    const translatedQuery = await translateTextEnglish(query); // Traducimos la consulta al inglés
 
     console.log('Consulta traducida a inglés:', translatedQuery); // Log para depuración
 
@@ -23,7 +20,7 @@ async function searchproducts(req, res) {
     try {
         const response = await axios.get(`https://world.openfoodfacts.org/cgi/search.pl`,{
             params: {
-                search_terms: translatedQuery, // Término de búsqueda
+                search_terms: query, // Término de búsqueda
                 search_simple: 1, //Sirve para indicar que es una búsqueda simple
                 action: 'process', // Acción a realizar
                 json: 1, // Formato de respuesta JSON
