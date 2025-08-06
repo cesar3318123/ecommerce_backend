@@ -9,17 +9,41 @@ async function generateContent(req, res) {
   } // Verificamos que el prompt no esté vacío
 
   try {
-    // Aquí llamas a la función que genera contenido
-    //search_simple funciona para busquedas simples, action=process para procesar la búsqueda y json=1 para obtener la respuesta en formato JSON
-    const openFoodUrl = `https://world.openfoodfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(prompt)}&search_simple=1&action=process&json=1`; // URL de Open Food Facts con el término de búsqueda
-    const openFoodResponse = await axios.get(openFoodUrl); // Realizar la solicitud a Open Food Facts
-    const products = openFoodResponse.data.products || []; // Extraer los productos de la respuesta
+    const response = await axios.get(`https://world.openfoodfacts.org/cgi/search.pl`,{
+                params: {
+                    search_terms: prompt, // Término de búsqueda
+                    search_simple: 1, //Sirve para indicar que es una búsqueda simple
+                    action: 'process', // Acción a realizar
+                    json: 1, // Formato de respuesta JSON
+                    page_size: 15 // Número de resultados por página
+                },
+                headers: {
+                    'User-Agent': 'MiAppEcommerce/1.0 (wwww.cesar3318123@gmail.com)'
+                }
+            });
 
-    //Preparar texto con productos para IA
-    //Slice sirve para limitar la cantidad de productos a 5
-    //.join sirve para unir los productos en una sola cadena de texto, separados por saltos de línea
-    let productListText = products.slice(0, 5).map(p => `- ${p.product_name || 'Nombre no disponible'}`).join('\n');
-    if (!productListText) productListText = 'No se encontraron productos releventes.'; // Si no hay productos, indicar que no se encontraron
+
+            // Obtener productos válidos
+    const rawProducts = response.data.products || [];
+
+    // Filtrar productos que tengan nombre
+    const filteredProducts = rawProducts.filter(p => p.product_name && p.image_url);
+    
+
+        const products = filteredProducts.map(p => ({
+            nombre: p.product_name,
+            marca: p.brands,
+            imagen: p.image_url
+        }));
+
+    // Preparar texto con productos para IA
+    let productListText = products.slice(0, 5)
+      .map(p => `- ${p.nombre || 'Nombre no disponible'}`)
+      .join('\n');
+
+    if (!productListText.trim()) {
+      productListText = 'No se encontraron productos relevantes.';
+    }
 
     //Generar contenido con IA basado en Prompt y la lista de productos
     const combinedPrompt = `El usuario pregunto: "${prompt}". Aqui hay una lista de productos relacionados:\n${productListText}\nPor favor, genera una descripción o recomendación para estos productos.`; // Combinar el prompt del usuaario con la lista de productos
@@ -30,7 +54,7 @@ async function generateContent(req, res) {
     // Responder con datos combinados
 
     res.json({
-      products: products.slice(0, 5), // primeros 5 productos para no saturar
+      products: products,
       aiResult,
     });
   } catch (error) {
