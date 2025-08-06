@@ -6,31 +6,19 @@ const axios = require('axios'); //Importar axios para hacer peticiones HTTP
 async function translateTextEnglish(text, sourceLang = 'es', targetLang = 'en') {
 
 
-    try {
-        const response = await axios.post(
-            'https://translate.argosopentech.com/translate',
-            {
-                q: text,
-                source: sourceLang,
-                target: targetLang,
-                format: 'text'
-            },
-            {
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            }
-        );
-
-
-    console.log('Respuesta completa de traducción:', response.data.translatedText);
-
-
-    return response.data.translatedText; // Retornar el texto traducido
-    } catch (error) {
-        console.error('Error al traducir el texto:', error);
-        return text; // Retornar el texto original en caso de error
-    }
+   try {
+    const response = await axios.post('https://libretranslate.com/translate', {
+      q: text,
+      source,
+      target,
+      format: 'text'
+    });
+    console.log('Texto traducido:', response.data.translatedText); // Log para depuración
+    return response.data.translatedText;
+  } catch (error) {
+    console.error('Error al traducir:', error.message);
+    return text;
+  }
 
 }
 
