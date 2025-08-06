@@ -12,7 +12,7 @@ async function generateContent(req, res) {
 
 
     // Usamos IA para aplicar lenguaje natural y obtener productos relacionados
-    const extrationlanguagenatural = await generateContentFromAI(`Del siguiente texto ${prompt}, extrae o inventa solo una o 2 palabras clave que puedan usarse como termino de busqueda en una base de datos referente a lo que quiere buscar en productos de la api de open food facts, no des explicaciones ni detalles para que la Api no se confunda, ni digas una introducción ni nada por el estilo, solo 2 palabras de respuesta a este prompt`)
+    const extrationlanguagenatural = await generateContentFromAI(`Del siguiente texto ${prompt}, extrae o inventa solo una o 2 palabras clave que puedan usarse como termino de busqueda en una base de datos referente a lo que quiere buscar en productos de la api de open food facts, no des explicaciones ni detalles para que la Api no se confunda, ni digas una introducción ni nada por el estilo, tampoco numeros, solo 2 palabras de respuesta a este prompt`)
 
 
     const response = await axios.get(`https://world.openfoodfacts.org/cgi/search.pl`,{
@@ -21,7 +21,7 @@ async function generateContent(req, res) {
                     search_simple: 1, //Sirve para indicar que es una búsqueda simple
                     action: 'process', // Acción a realizar
                     json: 1, // Formato de respuesta JSON
-                    page_size: 15 // Número de resultados por página
+                    page_size: 8 // Número de resultados por página
                 },
                 headers: {
                     'User-Agent': 'MiAppEcommerce/1.0 (wwww.cesar3318123@gmail.com)'
@@ -34,9 +34,23 @@ async function generateContent(req, res) {
 
     // Filtrar productos que tengan nombre
     const filteredProducts = rawProducts.filter(p => p.product_name && p.image_url);
+
+
+    //Aplicamos un filtro adicional para obtener los productos de forma mas precisa
+    //Usando IA descartamos los productos que no eran los que el usuario queria y solo dejamos los que son relevantes
+    const validationResults = await Promise.all(filteredProducts.map(async (p) => {
+      const validationPrompt = `El usuario quiere: "${prompt}". El producto se llama: "${p.product_name}". Descripción: "${p.generic_name || 'Sin descripción'}". ¿Este producto cumple totalmente con lo que el usuario busca? Responde solo con "sí" o "no", no digas nada mas, ni una descripcion, ni explicacion, ni introduccion para que la Api no se confunda o de algun error por algun caracter que no conoce, solo responde "sí" o "no".`;
+      const answer = await generateContentFromAI(validationPrompt);
+      return (answer.toLowerCase().includes("sí") || answer.toLowerCase().includes("si")) ? p : null;
+    }));
+
+    //Quitamos los productos que no pasaron la validación
+    const validatedProducts = validationResults.filter(Boolean);
+
+
     
 
-        const products = filteredProducts.map(p => ({
+        const products = validatedProducts.map(p => ({
             nombre: p.product_name,
             marca: p.brands,
             imagen: p.image_url
