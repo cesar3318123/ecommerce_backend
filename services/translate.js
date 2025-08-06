@@ -16,6 +16,9 @@ async function translateTextEnglish(text, sourceLang = 'es', targetLang = 'en') 
     });
 
 
+    console.log('Respuesta completa de traducción:', response.data);
+
+
     return response.data.translatedText; // Retornar el texto traducido
     } catch (error) {
         console.error('Error al traducir el texto:', error);
