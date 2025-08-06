@@ -12,7 +12,7 @@ async function generateContent(req, res) {
 
 
     // Usamos IA para aplicar lenguaje natural y obtener productos relacionados
-    const extrationlanguagenatural = `Del siguiente texto ${prompt}, extrae o inventa solo una o 2 palabras clave que puedan usarse como termino de busqueda en una base de datos referente a lo que quiere buscar en productos de la api de open food facts, no des explicaciones ni detalles para que la Api no se confunda, ni digas una introducción ni nada por el estilo, solo 2 palabras de respuesta a este prompt`
+    const extrationlanguagenatural = await generateContentFromAI(`Del siguiente texto ${prompt}, extrae o inventa solo una o 2 palabras clave que puedan usarse como termino de busqueda en una base de datos referente a lo que quiere buscar en productos de la api de open food facts, no des explicaciones ni detalles para que la Api no se confunda, ni digas una introducción ni nada por el estilo, solo 2 palabras de respuesta a este prompt`)
 
 
     const response = await axios.get(`https://world.openfoodfacts.org/cgi/search.pl`,{
