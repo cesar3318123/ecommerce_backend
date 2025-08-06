@@ -9,9 +9,15 @@ async function generateContent(req, res) {
   } // Verificamos que el prompt no esté vacío
 
   try {
+
+
+    // Usamos IA para aplicar lenguaje natural y obtener productos relacionados
+    const extrationlanguagenatural = `Del siguiente texto ${prompt}, extrae o inventa solo una o 2 palabras clave que puedan usarse como termino de busqueda en una base de datos referente a lo que quiere buscar en productos de la api de open food facts, no des explicaciones ni detalles para que la Api no se confunda, ni digas una introducción ni nada por el estilo, solo 2 palabras de respuesta a este prompt`
+
+
     const response = await axios.get(`https://world.openfoodfacts.org/cgi/search.pl`,{
                 params: {
-                    search_terms: prompt, // Término de búsqueda
+                    search_terms: extrationlanguagenatural, // Término de búsqueda
                     search_simple: 1, //Sirve para indicar que es una búsqueda simple
                     action: 'process', // Acción a realizar
                     json: 1, // Formato de respuesta JSON
@@ -46,7 +52,7 @@ async function generateContent(req, res) {
     }
 
     //Generar contenido con IA basado en Prompt y la lista de productos
-    const combinedPrompt = `El usuario pregunto: "${prompt}". Aqui hay una lista de productos relacionados:\n${productListText}\nPor favor, genera una descripción o recomendación para estos productos.`; // Combinar el prompt del usuaario con la lista de productos
+    const combinedPrompt = `El usuario pregunto: "${extrationlanguagenatural}". Aqui hay una lista de productos relacionados:\n${productListText}\nPor favor, genera una descripción o recomendación para estos productos.`; // Combinar el prompt del usuaario con la lista de productos
 
     const aiResult = await generateContentFromAI(combinedPrompt);
 
