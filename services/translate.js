@@ -23,7 +23,7 @@ async function translateTextEnglish(text, sourceLang = 'es', targetLang = 'en') 
         );
 
 
-    console.log('Respuesta completa de traducción:', response.data);
+    console.log('Respuesta completa de traducción:', response.data.translatedText);
 
 
     return response.data.translatedText; // Retornar el texto traducido
