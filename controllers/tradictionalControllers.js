@@ -14,9 +14,6 @@ async function searchproducts(req, res) {
     console.log('Buscando productos con la consulta:', query); // Log para depuración
 
 
-    console.log('Consulta traducida a inglés:', translatedQuery); // Log para depuración
-
-
     try {
         const response = await axios.get(`https://world.openfoodfacts.org/cgi/search.pl`,{
             params: {
