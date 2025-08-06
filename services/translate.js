@@ -7,13 +7,20 @@ async function translateTextEnglish(text, sourceLang = 'es', targetLang = 'en') 
 
 
     try {
-
-    const response = await axios.post('https://libretranslate.de/translate', {
-        q: text, // Texto a traducir
-        source: sourceLang, // Idioma de origen
-        target: targetLang, // Idioma de destino
-        format: 'text' // Formato del texto
-    });
+        const response = await axios.post(
+            'https://translate.argosopentech.com/translate',
+            {
+                q: text,
+                source: sourceLang,
+                target: targetLang,
+                format: 'text'
+            },
+            {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }
+        );
 
 
     console.log('Respuesta completa de traducción:', response.data);
