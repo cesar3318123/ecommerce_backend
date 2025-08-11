@@ -16,6 +16,9 @@ const { registerUser, authenticateUser, getUserByEmail } = require('../controlle
 // Importamos el controlador para buscar productos de forma tradicional
 const { searchproducts } = require('../controllers/tradictionalControllers');
 
+// Importamos el controlador de carrito de compras
+const { saveProducts } = require('../controllers/carController');
+
 // Definimos la ruta POST para el registro de usuarios
 router.post('/register', registerUser);
 
@@ -30,5 +33,8 @@ router.get('/searchTradictional', searchproducts);
 
 // Definimos la ruta GET para buscar con Google AI
 router.post('/searchIA', generateContent);
+
+// Definimos la ruta POST para guardar productos en el carrito de compras
+router.post('/cartSave', saveProducts);
 
 module.exports = router;
