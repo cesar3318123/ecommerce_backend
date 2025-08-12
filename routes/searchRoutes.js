@@ -38,6 +38,6 @@ router.post('/searchIA', generateContent);
 router.post('/cartSave', saveProducts);
 
 // Definimos la ruta GET para obtener los productos del carrito según el userId
-router.get('/cartGet', getCartItems);
+router.get('/cartGet/:userId', getCartItems);
 
 module.exports = router;
