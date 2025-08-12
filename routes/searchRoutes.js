@@ -17,7 +17,7 @@ const { registerUser, authenticateUser, getUserByEmail } = require('../controlle
 const { searchproducts } = require('../controllers/tradictionalControllers');
 
 // Importamos el controlador de carrito de compras
-const { saveProducts } = require('../controllers/carController');
+const { saveProducts, getCartItems } = require('../controllers/carController');
 
 // Definimos la ruta POST para el registro de usuarios
 router.post('/register', registerUser);
@@ -36,5 +36,8 @@ router.post('/searchIA', generateContent);
 
 // Definimos la ruta POST para guardar productos en el carrito de compras
 router.post('/cartSave', saveProducts);
+
+// Definimos la ruta GET para obtener los productos del carrito según el userId
+router.get('/cartGet', getCartItems);
 
 module.exports = router;
