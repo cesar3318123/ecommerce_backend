@@ -46,7 +46,7 @@ const vertexAI = new VertexAI({
 const model = vertexAI.getGenerativeModel({
   model: 'gemini-2.0-flash-lite-001', // Usa el modelo correcto según disponibilidad
   generationConfig: {
-    maxOutputTokens: 500, // Número máximo de tokens de salida
+    maxOutputTokens: 350, // Número máximo de tokens de salida
     temperature: 0.2, // Controla la aleatoriedad de la respuesta
     topP: 0.8 // Controla la diversidad de la respuesta
   },
