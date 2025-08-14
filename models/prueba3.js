@@ -44,7 +44,14 @@ const Prueba3EncuestaUX = sequelize.define('Prueba3EncuestaUX', {
   comentarios: {
     type: DataTypes.TEXT('long'),
     allowNull: true,
-  }
+  },
+    grupo: {
+        type: DataTypes.CHAR(1),
+        allowNull: false,
+        validate: {
+        isIn: [['A', 'B']]
+        }
+    }
 }, {
   tableName: 'PRUEBA3_ENCUESTA_UX',
   timestamps: true,
