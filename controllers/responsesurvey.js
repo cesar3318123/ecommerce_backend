@@ -114,7 +114,8 @@ async function createPrueba3(req, res) {
       inteligencia_percibida,
       confianza,
       volveria_usar,
-      comentarios
+      comentarios,
+      grupo
     } = req.body;
 
     // Validaciones opcionales antes de guardar
@@ -148,7 +149,8 @@ async function createPrueba3(req, res) {
       inteligencia_percibida,
       confianza,
       volveria_usar,
-      comentarios
+      comentarios,
+      grupo
     });
 
     res.status(201).json({
