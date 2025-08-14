@@ -19,6 +19,9 @@ const { searchproducts } = require('../controllers/tradictionalControllers');
 // Importamos el controlador de carrito de compras
 const { saveProducts, getCartItems } = require('../controllers/carController');
 
+// Importamos el controlador para manejar las encuestas
+const { createPrueba1, createPrueaba2, createPrueba3 } = require('../controllers/responsesurvey');
+
 // Definimos la ruta POST para el registro de usuarios
 router.post('/register', registerUser);
 
@@ -39,5 +42,14 @@ router.post('/cartSave', saveProducts);
 
 // Definimos la ruta GET para obtener los productos del carrito según el userId
 router.get('/cartGet/:userId', getCartItems);
+
+// Definimos la ruta POST para crear una encuesta de precisión
+router.post('/survey/prueba1', createPrueba1);
+
+// Definimos la ruta POST para crear una encuesta de tipo A/B
+router.post('/survey/prueba2', createPrueaba2);
+
+// Definimos la ruta POST para crear una encuesta de UX
+router.post('/survey/prueba3', createPrueba3);
 
 module.exports = router;
