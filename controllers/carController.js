@@ -44,5 +44,27 @@ async function getCartItems(req, res) {
     }
     }
 
+const deleteCartItem = async (req, res) => {
+  const { userId, itemId } = req.params;
+
+  try {
+    const deleted = await CartItem.destroy({
+      where: {
+        userId,
+        id: itemId,
+      },
+    });
+
+    if (deleted) {
+      return res.status(200).json({ mensaje: "Producto eliminado del carrito" });
+    } else {
+      return res.status(404).json({ error: "Producto no encontrado en el carrito" });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Error al eliminar producto" });
+  }
+};
+
 // exportar la función para usarla en las rutas
-module.exports = { saveProducts, getCartItems };
+module.exports = { saveProducts, getCartItems, deleteCartItem };
