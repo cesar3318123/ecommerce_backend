@@ -1,4 +1,6 @@
 const Prueba1Precision = require('../models/prueba1');
+const Prueba2AB = require('../models/prueba2');
+const Prueba3EncuestaUX = require('../models/prueba3');
 
 async function createPrueba1(req, res) {
       try {
