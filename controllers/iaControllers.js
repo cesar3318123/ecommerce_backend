@@ -39,7 +39,7 @@ async function generateContent(req, res) {
     //Aplicamos un filtro adicional para obtener los productos de forma mas precisa
     //Usando IA descartamos los productos que no eran los que el usuario queria y solo dejamos los que son relevantes
     const validationResults = await Promise.all(filteredProducts.map(async (p) => {
-      const validationPrompt = `El usuario quiere: "${prompt}". El producto se llama: "${p.product_name}". Descripción: "${p.generic_name || 'Sin descripción'}". ¿Este producto cumple totalmente con lo que el usuario busca? Responde solo con "sí" o "no", no digas nada mas, ni una descripcion, ni explicacion, ni introduccion para que la Api no se confunda o de algun error por algun caracter que no conoce, solo responde "sí" o "no".`;
+      const validationPrompt = `El usuario quiere: "${prompt}". El producto se llama: "${p.product_name}". Descripción: "${p.generic_name || 'Sin descripción'}". ¿Este producto cumple totalmente con lo que el usuario busca? Responde solo con "sí" o "no", no digas nada mas, ni una descripcion, ni explicacion, ni introduccion para que la Api no se confunda o de algun error por algun caracter que no conoce, solo responde "sí" o "no", si no conoces el producto o la descripción y el nombre no te hacen estar seguro de lo que es, por favor solo di "no" para que no se vaya a dar una descripción de un producto que no es lo que se quiere.`;
       const answer = await generateContentFromAI(validationPrompt);
       return (answer.toLowerCase().includes("sí") || answer.toLowerCase().includes("si")) ? p : null;
     }));
@@ -66,7 +66,7 @@ async function generateContent(req, res) {
     }
 
     //Generar contenido con IA basado en Prompt y la lista de productos
-    const combinedPrompt = `El usuario pregunto: "${extrationlanguagenatural}". Aqui hay una lista de productos relacionados:\n${productListText}\nPor favor, genera una descripción o recomendación para estos productos, recuerda estas hablando con el cliente, anuncia el producto mencionando sus beneficios y si no lo conoces, da detalles lo mas precisos como si lo conocieras.`; // Combinar el prompt del usuaario con la lista de productos
+    const combinedPrompt = `El usuario pregunto: "${extrationlanguagenatural}". Aqui hay una lista de productos relacionados:\n${productListText}\nPor favor, genera una descripción o recomendación para estos productos, recuerda estas hablando con el cliente, anuncia el producto mencionando sus beneficios y si no lo conoces, da detalles lo mas precisos como si lo conocieras, si no hay nada en la lista de productos, solo manda "No hay ningun producto disponible", solo esas palabras nada mas, ni una introducción ni descripción.`; // Combinar el prompt del usuaario con la lista de productos
 
     const aiResult = await generateContentFromAI(combinedPrompt);
 
