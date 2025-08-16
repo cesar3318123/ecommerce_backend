@@ -33,8 +33,9 @@ async function generateContent(req, res) {
     const rawProducts = response.data.products || [];
 
     // Filtrar productos que tengan nombre
-    const filteredProducts = rawProducts.filter(p => p.product_name && p.image_url);
+    let filteredProducts = rawProducts.filter(p => p.product_name && p.image_url);
 
+    filteredProducts = filteredProducts.slice(0, 8);
 
     //Aplicamos un filtro adicional para obtener los productos de forma mas precisa
     //Usando IA descartamos los productos que no eran los que el usuario queria y solo dejamos los que son relevantes
