@@ -61,6 +61,56 @@ const Prueba1Precision = sequelize.define('Prueba1Precision', {
     allowNull: false,
     validate: { min: 1, max: 3 }
   },
+  busqueda11: {
+    type: DataTypes.TINYINT,
+    allowNull: false,
+    validate: { min: 1, max: 3 }
+  },
+  busqueda12: {
+    type: DataTypes.TINYINT,
+    allowNull: false,
+    validate: { min: 1, max: 3 }
+  },
+  busqueda13: {
+    type: DataTypes.TINYINT,
+    allowNull: false,
+    validate: { min: 1, max: 3 }
+  },
+  busqueda14: {
+    type: DataTypes.TINYINT,
+    allowNull: false,
+    validate: { min: 1, max: 3 }
+  },
+  busqueda15: {
+    type: DataTypes.TINYINT,
+    allowNull: false,
+    validate: { min: 1, max: 3 }
+  },
+  busqueda16: {
+    type: DataTypes.TINYINT,
+    allowNull: false,
+    validate: { min: 1, max: 3 }
+  },
+  busqueda17: {
+    type: DataTypes.TINYINT,
+    allowNull: false,
+    validate: { min: 1, max: 3 }
+  },
+  busqueda18: {
+    type: DataTypes.TINYINT,
+    allowNull: false,
+    validate: { min: 1, max: 3 }
+  },
+  busqueda19: {
+    type: DataTypes.TINYINT,
+    allowNull: false,
+    validate: { min: 1, max: 3 }
+  },
+  busqueda20: {
+    type: DataTypes.TINYINT,
+    allowNull: false,
+    validate: { min: 1, max: 3 }
+  }
 }, {
   tableName: 'PRUEBA1_PRECISION',
   timestamps: true,
