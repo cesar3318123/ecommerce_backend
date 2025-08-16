@@ -30,29 +30,18 @@ async function generateContent(req, res) {
 
 
             // Obtener productos válidos
-    const rawProducts = response.data.products || [];
+const rawProducts = response.data.products || [];
 
-    // Filtrar productos que tengan nombre
-    let filteredProducts = rawProducts.filter(p => p.product_name && p.image_url);
-
-    filteredProducts = filteredProducts.slice(0, 8);
-
-    //Aplicamos un filtro adicional para obtener los productos de forma mas precisa
-    //Usando IA descartamos los productos que no eran los que el usuario queria y solo dejamos los que son relevantes
-    const validationResults = await Promise.all(filteredProducts.map(async (p) => {
-      const validationPrompt = `El usuario quiere: "${prompt}". El producto se llama: "${p.product_name}". Descripción: "${p.generic_name || 'Sin descripción'}". ¿Este producto cumple totalmente con lo que el usuario busca? Responde solo con "sí" o "no", no digas nada mas, ni una descripcion, ni explicacion, ni introduccion para que la Api no se confunda o de algun error por algun caracter que no conoce, solo responde "sí" o "no", si no conoces el producto o la descripción y el nombre no te hacen estar seguro de lo que es, por favor solo di "no" para que no se vaya a dar una descripción de un producto que no es lo que se quiere.`;
-      const answer = await safeGenerateContentFromAI(validationPrompt);
-      return (answer.toLowerCase().includes("sí") || answer.toLowerCase().includes("si")) ? p : null;
+// Limitar solo a los primeros 8 productos que tengan nombre e imagen
+const products = rawProducts
+    .filter(p => p.product_name && p.image_url)
+    .slice(0, 8)
+    .map(p => ({
+        nombre: p.product_name,
+        marca: p.brands,
+        imagen: p.image_url,
     }));
 
-
-    const finalProducts = validationResults.filter(Boolean);
-
-    const products = finalProducts.map((p) => ({
-      nombre: p.product_name,
-      marca: p.brands,
-      imagen: p.image_url,
-    }));
 
     // Preparar texto con productos para IA
     let productListText = products.slice(0, 10)
