@@ -57,7 +57,7 @@ async function generateContent(req, res) {
     }));
 
     // Preparar texto con productos para IA
-    let productListText = products.slice(0, 5)
+    let productListText = products.slice(0, 10)
       .map(p => `- ${p.nombre || 'Nombre no disponible'}`)
       .join('\n');
 
