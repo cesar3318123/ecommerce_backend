@@ -47,39 +47,8 @@ async function generateContent(req, res) {
     //Quitamos los productos que no pasaron la validación
     const validatedProducts = validationResults.filter(Boolean);
 
-    // Validación por imagen
-    const validationByImage = await Promise.all(
-      validatedProducts.map(async (p) => {
-        try {
-          const validationPrompt = `El usuario busca: "${prompt}". Evalúa si esta imagen corresponde al producto que desea. Responde solo con "sí" o "no".`;
-          const req = {
-            contents: [
-              {
-                role: 'user',
-                parts: [
-                  { text: validationPrompt },
-                  {
-                    inline_data: {
-                      mime_type: 'image/jpeg',
-                      data: await fetchImageAsBase64(p.image_url),
-                    },
-                  },
-                ],
-              },
-            ],
-          };
 
-          const answer = await model.generateContent(req);
-          const text = answer.candidates?.[0]?.content?.parts?.[0]?.text || '';
-          return text.toLowerCase().includes('sí') || text.toLowerCase().includes('si') ? p : null;
-        } catch (err) {
-          console.error(`Error procesando imagen de ${p.product_name}:`, err.message);
-          return null;
-        }
-      })
-    );
-
-    const finalProducts = validationByImage.filter(Boolean);
+    const finalProducts = validatedProducts.filter(Boolean);
 
     const products = finalProducts.map((p) => ({
       nombre: p.product_name,
@@ -114,16 +83,7 @@ async function generateContent(req, res) {
   }
 }
 
-// Función auxiliar: convertir imagen a base64
-async function fetchImageAsBase64(url) {
-  try {
-    const res = await axios.get(url, { responseType: 'arraybuffer' });
-    return Buffer.from(res.data, 'binary').toString('base64');
-  } catch (err) {
-    console.error(`Error descargando imagen ${url}:`, err.message);
-    throw err;
-  }
-}
+
 
 
 // Función para generar contenido con respuesta en streaming
