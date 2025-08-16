@@ -4,14 +4,14 @@ const Prueba3EncuestaUX = require('../models/prueba3');
 
 async function createPrueba1(req, res) {
       try {
-    const { userId, busqueda1, busqueda2, busqueda3, busqueda4, busqueda5, busqueda6, busqueda7, busqueda8, busqueda9, busqueda10 } = req.body;
+    const { userId, busqueda1, busqueda2, busqueda3, busqueda4, busqueda5, busqueda6, busqueda7, busqueda8, busqueda9, busqueda10, busqueda11, busqueda12, busqueda13, busqueda14, busqueda15, busqueda16, busqueda17, busqueda18, busqueda19, busqueda20 } = req.body;
 
     // Validar que todos los campos estén presentes
-    if (!userId || [busqueda1, busqueda2, busqueda3, busqueda4, busqueda5, busqueda6, busqueda7, busqueda8, busqueda9, busqueda10].some(v => v === undefined)) {
+    if (!userId || [busqueda1, busqueda2, busqueda3, busqueda4, busqueda5, busqueda6, busqueda7, busqueda8, busqueda9, busqueda10, busqueda11, busqueda12, busqueda13, busqueda14, busqueda15, busqueda16, busqueda17, busqueda18, busqueda19, busqueda20].some(v => v === undefined)) {
       return res.status(400).json({ message: "Todos los campos son obligatorios" });
     }
     // Validar que los valores de busqueda sean números entre 1 y 3
-    const busquedas = [busqueda1, busqueda2, busqueda3, busqueda4, busqueda5, busqueda6, busqueda7, busqueda8, busqueda9, busqueda10];
+    const busquedas = [busqueda1, busqueda2, busqueda3, busqueda4, busqueda5, busqueda6, busqueda7, busqueda8, busqueda9, busqueda10, busqueda11, busqueda12, busqueda13, busqueda14, busqueda15, busqueda16, busqueda17, busqueda18, busqueda19, busqueda20];
     for (const busqueda of busquedas) {
         if (typeof busqueda !== 'number' || busqueda < 1 || busqueda > 3) {
             return res.status(400).json({ message: "Los valores de busqueda deben ser números entre 1 y 3" });
@@ -29,7 +29,17 @@ async function createPrueba1(req, res) {
       busqueda7,
       busqueda8,
       busqueda9,
-      busqueda10
+      busqueda10,
+      busqueda11,
+      busqueda12,
+      busqueda13,
+      busqueda14,
+      busqueda15,
+      busqueda16,
+      busqueda17,
+      busqueda18,
+      busqueda19,
+      busqueda20
     });
 
     res.status(201).json({ message: "Respuestas guardadas con éxito", data: nuevaRespuesta });
