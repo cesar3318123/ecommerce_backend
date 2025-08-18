@@ -42,10 +42,7 @@ const Prueba2AB = sequelize.define('Prueba2AB', {
     type: DataTypes.STRING(255),
     allowNull: false,
   },
-  tiempo_empleado: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-  },
+
   claridad: {
     type: DataTypes.TINYINT,
     allowNull: false,

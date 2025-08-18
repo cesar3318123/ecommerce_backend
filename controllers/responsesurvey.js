@@ -58,13 +58,12 @@ async function createPrueaba2(req, res) {
       frase_exacta,
       sistema_usado,
       producto_encontrado,
-      tiempo_empleado,
       claridad,
       comentarios
     } = req.body;
 
     // Validaciones opcionales antes de guardar
-    if (!userId || !grupo || !num_tarea || !frase_exacta || !sistema_usado || !producto_encontrado || !tiempo_empleado || !claridad || !comentarios) {
+    if (!userId || !grupo || !num_tarea || !frase_exacta || !sistema_usado || !producto_encontrado || !claridad || !comentarios) {
       return res.status(400).json({ error: 'Todos los campos son obligatorios' });
     }
 
@@ -79,9 +78,6 @@ async function createPrueaba2(req, res) {
     if (![1, 2, 3, 4, 5].includes(Number(claridad))) {
       return res.status(400).json({ error: 'clarida debe de estar entre 1 y 5' });
     }
-    if (typeof tiempo_empleado !== 'number' || tiempo_empleado <= 0) {
-      return res.status(400).json({ error: 'tiempo_empleado debe ser un número positivo' });
-    }
     
 
     // Crear el registro
@@ -92,7 +88,6 @@ async function createPrueaba2(req, res) {
       frase_exacta,
       sistema_usado,
       producto_encontrado,
-      tiempo_empleado,
       claridad,
       comentarios
     });
