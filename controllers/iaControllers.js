@@ -21,7 +21,7 @@ async function generateContent(req, res) {
                     search_simple: 1, //Sirve para indicar que es una búsqueda simple
                     action: 'process', // Acción a realizar
                     json: 1, // Formato de respuesta JSON
-                    page_size: 10 // Número de resultados por página
+                    page_size: 40 // Número de resultados por página
                 },
                 headers: {
                     'User-Agent': 'MiAppEcommerce/1.0 (wwww.cesar3318123@gmail.com)'
