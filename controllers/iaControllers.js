@@ -21,7 +21,7 @@ async function generateContent(req, res) {
                     search_simple: 1, //Sirve para indicar que es una búsqueda simple
                     action: 'process', // Acción a realizar
                     json: 1, // Formato de respuesta JSON
-                    page_size: 40 // Número de resultados por página
+                    page_size: 10 // Número de resultados por página
                 },
                 headers: {
                     'User-Agent': 'MiAppEcommerce/1.0 (wwww.cesar3318123@gmail.com)'
@@ -53,7 +53,7 @@ const products = rawProducts
     }
 
     //Generar contenido con IA basado en Prompt y la lista de productos
-    const combinedPrompt = `El usuario pregunto: "${extrationlanguagenatural}". Aqui hay una lista de productos relacionados:\n${productListText}\nPor favor, genera una descripción o recomendación para estos productos, uno por uno, recuerda estas hablando con el cliente, anuncia el producto mencionando sus beneficios y si no lo conoces, da detalles lo mas precisos como si lo conocieras, si no hay nada en la lista de productos, solo manda "No hay ningun producto disponible", solo esas palabras nada mas, ni una introducción ni descripción.`; // Combinar el prompt del usuaario con la lista de productos
+    const combinedPrompt = `El usuario pregunto: "${extrationlanguagenatural}". Aqui hay una lista de productos relacionados:\n${productListText}\nPor favor, genera una descripción o recomendación para estos productos, uno por uno, recuerda estas hablando con el cliente, anuncia el producto mencionando sus beneficios y si no lo conoces da detalles lo mas precisos como si lo conocieras, si no hay nada en la lista de productos, solo manda "No hay ningun producto disponible", solo esas palabras nada mas, ni una introducción ni descripción.`; // Combinar el prompt del usuaario con la lista de productos
 
     const aiResult = await safeGenerateContentFromAI(combinedPrompt);
 
@@ -63,6 +63,74 @@ const products = rawProducts
     res.json({
       products: products,
       aiResult,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Error generando contenido' });
+  }
+}
+
+
+
+
+//Controller para manejar las peticiones de búsqueda con Google AI
+async function generateContentanalytic(req, res) {
+  const { prompt } = req.body; // Extraemos el prompt del cuerpo de la solicitud
+  if (!prompt) {
+    return res.status(400).json({ error: 'Falta el prompt' });
+  } // Verificamos que el prompt no esté vacío
+
+  try {
+
+
+    // Usamos IA para aplicar lenguaje natural y obtener productos relacionados
+    const extrationlanguagenatural = await safeGenerateContentFromAI(`Del siguiente texto ${prompt}, extrae o inventa solo una o 2 palabras clave que puedan usarse como termino de busqueda en una base de datos referente a lo que quiere buscar en productos de la api de open food facts, no des explicaciones ni detalles para que la Api no se confunda, ni digas una introducción ni nada por el estilo, tampoco numeros, solo una o 2 palabras de respuesta a este prompt y por favor se completamente objetivo, si dicen naranja por ejemplo, devuelve naranja nada mas, no pongas otra cosa para que la api no me de otros resultados que aunque esten relacionados no son lo que el usuario quiere buscar, por favor, se objetivo y preciso.`); // Generar contenido con IA para extraer palabras clave
+
+
+    const response = await axios.get(`https://world.openfoodfacts.org/cgi/search.pl`,{
+                params: {
+                    search_terms: extrationlanguagenatural, // Término de búsqueda
+                    search_simple: 1, //Sirve para indicar que es una búsqueda simple
+                    action: 'process', // Acción a realizar
+                    json: 1, // Formato de respuesta JSON
+                    page_size: 100 // Número de resultados por página
+                },
+                headers: {
+                    'User-Agent': 'MiAppEcommerce/1.0 (wwww.cesar3318123@gmail.com)'
+                }
+            });
+
+
+            // Obtener productos válidos
+const rawProducts = response.data.products || [];
+
+// Limitar solo a los primeros 8 productos que tengan nombre e imagen
+const products = rawProducts
+    .filter(p => p.product_name && p.image_url)
+    .slice(0, 8)
+    .map(p => ({
+        nombre: p.product_name,
+        marca: p.brands,
+        imagen: p.image_url,
+    }));
+
+
+    // Preparar texto con productos para IA
+    let productListText = products.slice(0, 10)
+      .map(p => `- ${p.nombre || 'Nombre no disponible'}`)
+      .join('\n');
+
+    if (!productListText.trim()) {
+      productListText = 'No se encontraron productos relevantes.';
+    }
+
+
+
+
+    // Responder con datos combinados
+
+    res.json({
+      products: products,
     });
   } catch (error) {
     console.error(error);
@@ -107,4 +175,4 @@ async function generateContentFromAI(prompt) {
   return output;
 }
 
-module.exports = { generateContent };
+module.exports = { generateContent, generateContentanalytic };

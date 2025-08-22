@@ -8,7 +8,7 @@ const express = require('express');
 const router = express.Router();
 
 // Importamos el controlador para buscar con Google AI
-const { generateContent } = require('../controllers/iaControllers');
+const { generateContent, generateContentanalytic } = require('../controllers/iaControllers');
 
 // Importamos el controlador para el registro y autenticación de usuarios
 const { registerUser, authenticateUser, getUserByEmail } = require('../controllers/userControllers');
@@ -54,5 +54,8 @@ router.post('/survey/prueba3', createPrueba3);
 
 // Definimos la ruta DELETE para eliminar un producto del carrito
 router.delete('/cartDelete/:userId/:itemId', deleteCartItem);
+
+// Definimos la ruta POST para generar contenido analítico con IA
+router.post('/generateContentanalytic', generateContentanalytic);
 
 module.exports = router;
