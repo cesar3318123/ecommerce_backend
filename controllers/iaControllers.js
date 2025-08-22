@@ -107,7 +107,7 @@ const rawProducts = response.data.products || [];
 // Limitar solo a los primeros 8 productos que tengan nombre e imagen
 const products = rawProducts
     .filter(p => p.product_name && p.image_url)
-    .slice(0, 8)
+    .slice(0, 100)
     .map(p => ({
         nombre: p.product_name,
         marca: p.brands,
