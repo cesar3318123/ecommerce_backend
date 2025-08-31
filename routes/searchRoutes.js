@@ -19,6 +19,9 @@ const { searchproducts } = require('../controllers/tradictionalControllers');
 // Importamos el controlador de carrito de compras
 const { saveProducts, getCartItems, deleteCartItem } = require('../controllers/carController');
 
+// Importamos el controlador para obtener información de productos
+const { infor_products } = require('../controllers/infor_products');
+
 // Importamos el controlador para manejar las encuestas
 const { createPrueba1, createPrueaba2, createPrueba3 } = require('../controllers/responsesurvey');
 
@@ -57,5 +60,8 @@ router.delete('/cartDelete/:userId/:itemId', deleteCartItem);
 
 // Definimos la ruta POST para generar contenido analítico con IA
 router.post('/generateContentanalytic', generateContentanalytic);
+
+// Definimos la ruta GET para obtener información de un producto por su ID
+router.get('/product/:id', infor_products);
 
 module.exports = router;
