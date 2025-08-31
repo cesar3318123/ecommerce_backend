@@ -1,30 +1,36 @@
 async function infor_products(req, res) {
-  const { name } = req.params;
-  if (!name) {
-    return res.status(400).json({ error: "Falta el nombre del producto" });
+  const { id } = req.params; // recibimos el id en vez del nombre
+  if (!id) {
+    return res.status(400).json({ error: "Falta el ID del producto" });
   }
 
   try {
     const response = await fetch(
-      `https://world.openfoodfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(
-        name
-      )}&search_simple=1&action=process&json=1`
+      `https://world.openfoodfacts.org/api/v0/product/${encodeURIComponent(id)}.json`
     );
     const data = await response.json();
 
-    if (!data.products || data.products.length === 0) {
+    if (!data.product) {
       return res.status(404).json({ error: "Producto no encontrado" });
     }
 
-    const firstProduct = data.products[0]; // Tomamos el primer resultado
+    const p = data.product;
 
     const product = {
-      id: firstProduct._id,
-      nombre: firstProduct.product_name,
-      marca: firstProduct.brands,
-      categoria: firstProduct.categories,
-      calorias: firstProduct.nutriments?.["energy-kcal_100g"] || "No disponible",
-      imagen: firstProduct.image_url,
+      id: p._id,
+      nombre: p.product_name,
+      marca: p.brands,
+      categoria: p.categories,
+      imagen: p.image_url,
+      ingredientes: p.ingredients_text || "No disponible",
+      etiquetas: p.labels || "No disponible",
+      paises: p.countries || "No disponible",
+      nutriments: p.nutriments || {},
+      alergenos: p.allergens || "No disponible",
+      empaquetado: p.packaging || "No disponible",
+      ecoscore: p.ecoscore_score || "No disponible",
+      nutriscore: p.nutriscore_score || "No disponible",
+      cantidad: p.quantity || "No disponible",
     };
 
     res.json(product);
