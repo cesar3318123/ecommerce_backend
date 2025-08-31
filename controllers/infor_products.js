@@ -2,13 +2,13 @@ const axios = require('axios');
 
 
 async function infor_products(req, res) {
-    const { id } = req.params;
-    if (!id) {
+    const { name } = req.params;
+    if (!name) {
         return res.status(400).json({ error: 'Falta el ID del producto' });
     }
 
     try {
-            const response = await fetch(`https://world.openfoodfacts.org/api/v0/product/${id}.json`);
+            const response = await fetch(`https://world.openfoodfacts.org/api/v0/product/${name}.json`);
     const data = await response.json();
 
     if (!data || !data.product) {
