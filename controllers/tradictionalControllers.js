@@ -46,6 +46,7 @@ async function searchproducts(req, res) {
 
 
         const products = filteredProducts.map(p => ({
+            id: p._id,
             nombre: p.product_name,
             marca: p.brands,
             imagen: p.image_url
