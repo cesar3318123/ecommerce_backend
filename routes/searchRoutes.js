@@ -62,6 +62,6 @@ router.delete('/cartDelete/:userId/:itemId', deleteCartItem);
 router.post('/generateContentanalytic', generateContentanalytic);
 
 // Definimos la ruta GET para obtener información de un producto por su ID
-router.get('/product/:name', infor_products);
+router.get('/product/:id', infor_products);
 
 module.exports = router;
