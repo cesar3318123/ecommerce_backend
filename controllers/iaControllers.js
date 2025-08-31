@@ -37,6 +37,7 @@ const products = rawProducts
     .filter(p => p.product_name && p.image_url)
     .slice(0, 8)
     .map(p => ({
+        id: p._id,
         nombre: p.product_name,
         marca: p.brands,
         imagen: p.image_url,
@@ -109,6 +110,7 @@ const products = rawProducts
     .filter(p => p.product_name && p.image_url)
     .slice(0, 100)
     .map(p => ({
+        id: p._id,
         nombre: p.product_name,
         marca: p.brands,
         imagen: p.image_url,
