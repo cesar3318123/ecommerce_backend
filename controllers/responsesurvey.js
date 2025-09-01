@@ -174,7 +174,7 @@ async function createPrueba3(req, res) {
 
 async function createPrueba4(req, res) {
     try {
-    const nueva = await Respuesta.create(req.body);
+    const nueva = await Prueba4.create(req.body);
     res.status(201).json({ message: 'Respuesta guardada', data: nueva });
   } catch (error) {
     console.error('❌ Error al guardar:', error);
