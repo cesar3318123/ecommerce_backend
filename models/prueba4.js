@@ -11,7 +11,7 @@ const Prueba4 = sequelize.define('Prueba4', {
   moderno: { type: DataTypes.BOOLEAN, allowNull: false },
   pocoTiempo: { type: DataTypes.BOOLEAN, allowNull: false },
 }, {
-  tableName: 'respuestas',
+  tableName: 'Prueba4',
   timestamps: true
 });
 
