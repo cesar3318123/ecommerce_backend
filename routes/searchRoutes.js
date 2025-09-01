@@ -23,7 +23,7 @@ const { saveProducts, getCartItems, deleteCartItem } = require('../controllers/c
 const { infor_products } = require('../controllers/infor_products');
 
 // Importamos el controlador para manejar las encuestas
-const { createPrueba1, createPrueaba2, createPrueba3 } = require('../controllers/responsesurvey');
+const { createPrueba1, createPrueaba2, createPrueba3, createPrueba4 } = require('../controllers/responsesurvey');
 
 // Definimos la ruta POST para el registro de usuarios
 router.post('/register', registerUser);
@@ -63,5 +63,8 @@ router.post('/generateContentanalytic', generateContentanalytic);
 
 // Definimos la ruta GET para obtener información de un producto por su ID
 router.get('/product/:id', infor_products);
+
+// Definimos la ruta POST para crear una respuesta de la prueba 4
+router.post('/survey/prueba4', createPrueba4);
 
 module.exports = router;

@@ -1,6 +1,7 @@
 const Prueba1Precision = require('../models/prueba1');
 const Prueba2AB = require('../models/prueba2');
 const Prueba3EncuestaUX = require('../models/prueba3');
+const Prueba4 = require('../models/prueba4');
 
 async function createPrueba1(req, res) {
       try {
@@ -171,5 +172,18 @@ async function createPrueba3(req, res) {
 
 }
 
+async function createPrueba4(req, res) {
+    try {
+    const nueva = await Respuesta.create(req.body);
+    res.status(201).json({ message: 'Respuesta guardada', data: nueva });
+  } catch (error) {
+    console.error('❌ Error al guardar:', error);
+    res.status(500).json({ error: 'Error al guardar respuesta' });
+  }
+
+}
+
+
+
 // Exportamos la función para poder usarla en las rutas
-module.exports = { createPrueba1, createPrueaba2, createPrueba3 };
+module.exports = { createPrueba1, createPrueaba2, createPrueba3, createPrueba4 };
