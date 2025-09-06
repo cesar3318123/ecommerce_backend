@@ -19,7 +19,7 @@ const CartItem = sequelize.define(
       allowNull: false,
     },
     productId: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING,
       allowNull: false,
     },
     marca: {
