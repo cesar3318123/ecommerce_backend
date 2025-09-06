@@ -2,7 +2,9 @@
 const CartItem = require('../models/CartItem')
 //Crear una función para guardar productos en el carrito
 async function saveProducts (req, res) {
+      console.log("Datos recibidos en backend:", req.body);
     const { userId, productId, nombre, marca, imagen } = req.body;
+
 
   if (!userId || !nombre) {
     return res.status(400).json({ message: "Faltan datos obligatorios" });
