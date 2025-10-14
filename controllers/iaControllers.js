@@ -23,22 +23,12 @@ extrae solo una o dos palabras clave que describan exactamente lo que el usuario
 Responde solo con las palabras clave.
 `);
 
-    const filtrolanguajenatural = await safeGenerateContentFromAI(`
-Del siguiente texto: "${extrationlanguagenatural}",
-verifica que las palabras clave representen correctamente la intención original: "${prompt}".
-- Si dice "sin [ingrediente]", conserva el formato "sin ingrediente".
-- Si dice "bajo en [nutriente]" o "menos de [cantidad]", usa el formato "[nutriente] lt [cantidad]".
-- Si dice "más de [cantidad]" o "alto en [nutriente]", usa el formato "[nutriente] gt [cantidad]".
-- Si no menciona cantidades, deja solo el producto principal (por ejemplo, "galletas avena").
-- No devuelvas texto extra, solo dos palabras separadas por espacio.
-- Si el texto original es ambiguo, elige la interpretación más precisa y específica posible.
-`);
 
     const response = await axios.get(
       `https://world.openfoodfacts.org/cgi/search.pl`,
       {
         params: {
-          search_terms: filtrolanguajenatural, // Término de búsqueda
+          search_terms: extrationlanguagenatural, // Término de búsqueda
           search_simple: 1, //Sirve para indicar que es una búsqueda simple
           action: "process", // Acción a realizar
           json: 1, // Formato de respuesta JSON
