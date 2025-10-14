@@ -15,9 +15,12 @@ async function generateContent(req, res) {
     const extrationlanguagenatural = await safeGenerateContentFromAI(`Del siguiente texto ${prompt}, extrae o inventa solo una o 2 palabras clave que puedan usarse como termino de busqueda en una base de datos referente a lo que quiere buscar en productos de la api de open food facts, no des explicaciones ni detalles para que la Api no se confunda, ni digas una introducción ni nada por el estilo, tampoco numeros, solo una o 2 palabras de respuesta a este prompt y por favor se completamente objetivo, si dicen naranja por ejemplo, devuelve naranja nada mas, no pongas otra cosa para que la api no me de otros resultados que aunque esten relacionados no son lo que el usuario quiere buscar, por favor, se objetivo y preciso, si dice sin cacao, busca palabras que no den cacao, si dice con cierta cantidad de producto busca la forma de expresarlo con sola 2 palabras.`); // Generar contenido con IA para extraer palabras clave
 
 
+    const filtrolanguajenatural = await safeGenerateContentFromAI(`Del siguiente texto ${extrationlanguagenatural}, verifica que cumpla con el prompt ${prompt}, y devuelvelo asi sin ninguna explicación, ni introducción, sino, modificalo recuerda tienen que ser 2 palabras clave, si dice sin cacao, busca productos diferentes a los que estan hechos con cacao, por ejemplo manzanas, frutas (la unica exsepción es sin azucar alli si buscalo sin azucar), pero solo 2 palabras, si dice con cierta cantidad de producto pones la palabra del producto y la cantidad, pero te vuelvo a repetir, solo 2 palabras, para que no falle mi programa`)
+
+
     const response = await axios.get(`https://world.openfoodfacts.org/cgi/search.pl`,{
                 params: {
-                    search_terms: extrationlanguagenatural, // Término de búsqueda
+                    search_terms: filtrolanguajenatural, // Término de búsqueda
                     search_simple: 1, //Sirve para indicar que es una búsqueda simple
                     action: 'process', // Acción a realizar
                     json: 1, // Formato de respuesta JSON
@@ -54,7 +57,7 @@ const products = rawProducts
     }
 
     //Generar contenido con IA basado en Prompt y la lista de productos
-    const combinedPrompt = `El usuario pregunto: "${extrationlanguagenatural}". Aqui hay una lista de productos relacionados:\n${productListText}\nPor favor, genera una descripción o recomendación para estos productos, uno por uno, haz una division por producto usando estos simbolos juntos "#.#" al final de cada descripcion de producto (por que mas adalante voy a dividir el prompt), recuerda estas hablando con el cliente directamente no conmigo(comienza dando una presentación demasiado corta), anuncia el producto mencionando sus beneficios y si no lo conoces da detalles lo mas precisos como si lo conocieras, si no hay nada en la lista de productos, solo manda "No hay ninguna descripción", otra cosa, la introducción que vayas a dar, que tambien termine con "#.#", esto ultimo que para nada se te olvide (por que si no la descripcion del producto me la va a tomar como parte de la introducción, por favor no se te olvida esa ultima parte).`; // Combinar el prompt del usuaario con la lista de productos
+    const combinedPrompt = `El usuario pregunto: "${filtrolanguajenatural}". Aqui hay una lista de productos relacionados:\n${productListText}\nPor favor, genera una descripción o recomendación para estos productos, uno por uno, haz una division por producto usando estos simbolos juntos "#.#" al final de cada descripcion de producto (por que mas adalante voy a dividir el prompt), recuerda estas hablando con el cliente directamente no conmigo(comienza dando una presentación demasiado corta), anuncia el producto mencionando sus beneficios y si no lo conoces da detalles lo mas precisos como si lo conocieras, si no hay nada en la lista de productos, solo manda "No hay ninguna descripción", otra cosa, la introducción que vayas a dar, que tambien termine con "#.#", esto ultimo que para nada se te olvide (por que si no la descripcion del producto me la va a tomar como parte de la introducción, por favor no se te olvida esa ultima parte).`; // Combinar el prompt del usuaario con la lista de productos
 
     const aiResult = await safeGenerateContentFromAI(combinedPrompt);
 
