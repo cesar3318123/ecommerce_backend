@@ -10,43 +10,62 @@ async function generateContent(req, res) {
 
   try {
     // Usamos IA para aplicar lenguaje natural y obtener productos relacionados
-    const extrationlanguagenatural = await safeGenerateContentFromAI(`
-Del siguiente texto: "${prompt}", 
-extrae solo una o dos palabras clave que describan exactamente lo que el usuario quiere buscar en la API de Open Food Facts.
-- No agregues explicación, puntuación, ni texto adicional.
-- No uses números, símbolos o conectores.
-- No generalices: si el usuario dice "galletas de avena", devuelve "galletas avena".
-- Si dice por ejemplo el prompt "productos sin cacao", no incluyas la palabra y manda solo productos, esto es un ejemplo, aplicalo en cualquier caso.
-- Si dice "bajo en azúcar", devuelve "sin azúcar, esta es la unica expcepción a lo anterior".
-- Si dice "con 10g de proteína" o "alto en proteína", devuelve "proteína 10g" o "alta proteína".
-- Si no se especifica cantidad ni condición, devuelve solo el producto más relevante.
-Responde solo con las palabras clave.
-- Por favor todos los casos anteriores juntamente y da la mejor respuesta posible para que la API no se confunda.
+const extractionStep1 = await safeGenerateContentFromAI(`
+Del siguiente texto: "${prompt}",
+extrae únicamente las palabras más importantes que indiquen el producto o característica principal que el usuario busca en la API de Open Food Facts.
+- Ignora palabras de relleno como "quiero", "me gustaría", "busco", "dame", "muéstrame", "necesito".
+- Si dice "sin", "que no tenga" o "libre de", elimínalas junto con las 2 o 3 palabras relacionadas al ingrediente (excepto "sin azúcar").
+- Conserva ingredientes, nutrientes o tipos de producto relevantes (ej: avena, jugo, chocolate, proteína, azúcar).
+- Si dice "bajo en", "alto en", "con", "contiene", "orgánico", "vegano", "natural", "integral", "light", "sin gluten", "sin lactosa", consérvalos.
 `);
 
-console.log("Primer filtro:", extrationlanguagenatural);
+console.log("Primer filtro:", extractionStep1);
 
-const filtratedExtraction = await safeGenerateContentFromAI(`
-Del siguiente texto: "${extrationlanguagenatural}", y considerando el prompt original del usuario: "${prompt}",
-- Si el prompt dice sin cacao, sin gluten, sin lactosa, sin sal, sin grasas, etc, quita esas 2 palabras y manda lo que quede, la unica excepcion es sin azúcar, esa si la dejas.
-- Si dice el prompt "bajo en [nutriente]" o "menos de [cantidad]", usa el formato "[nutriente] lt [cantidad]".
-- Si dice el prompt "más de [cantidad]" o "alto en [nutriente]", usa el formato "[nutriente] gt [cantidad]".
-- Si no menciona cantidades, deja solo el producto principal (por ejemplo, "galletas avena").
-- Responde solo con 1, 2 o 3 palabras clave filtradas, segun lo que haya quedado y considerando las reglas.
-- No agregues explicación, puntuación, ni texto adicional, para que la API no se confunda.
-- Por favor considera todos los casos anteriores y da la mejor respuesta posible.
-
+const extractionStep2 = await safeGenerateContentFromAI(`
+Del siguiente texto: "${extractionStep1}",
+determina si la búsqueda corresponde a:
+- una exclusión ("sin", "libre de", "que no tenga"),
+- una inclusión ("con", "contiene", "hecho con"),
+- una cantidad o comparación ("bajo en", "alto en", "menos de", "más de"),
+- una etiqueta o característica ("vegano", "orgánico", "natural", "integral", "light", "sin gluten", "sin lactosa"),
+- o simplemente un producto o sabor ("galletas avena", "jugos naranja").
+Devuelve solo el tipo de búsqueda y las palabras principales relacionadas, sin explicaciones.  
+Máximo 3 palabras.
 `);
 
 
-console.log("segundo filtro:", filtratedExtraction);
+
+console.log("segundo filtro:", extractionStep2);
+
+const extractionStep3 = await safeGenerateContentFromAI(`
+Del siguiente texto: "${extractionStep2}",
+normaliza las palabras al formato lógico compatible con la API de Open Food Facts:
+- "sin [ingrediente]" → "ingredients does_not_contain [ingrediente]"
+- "con [ingrediente]" → "ingredients contains [ingrediente]"
+- "bajo en [nutriente]" o "menos de [cantidad]" → "nutriment lt [cantidad]"
+- "alto en [nutriente]" o "más de [cantidad]" → "nutriment gt [cantidad]"
+- "vegano" → "labels contains vegan"
+- "orgánico" → "labels contains organic"
+- "natural" → "labels contains natural"
+- "integral" → "labels contains wholegrain"
+- "light" → "labels contains light"
+- "sin gluten" → "labels contains gluten-free"
+- "sin lactosa" → "labels contains lactose-free"
+- Si no aplica ninguna de las anteriores, usa "product search [nombre]".
+No des explicaciones, solo el formato lógico en máximo 3 palabras.
+`);
+
+
+
+
+console.log("tercer filtro:", extractionStep3);
 
 
     const response = await axios.get(
       `https://world.openfoodfacts.org/cgi/search.pl`,
       {
         params: {
-          search_terms: filtratedExtraction, // Término de búsqueda
+          search_terms: extractionStep3, // Término de búsqueda
           search_simple: 1, //Sirve para indicar que es una búsqueda simple
           action: "process", // Acción a realizar
           json: 1, // Formato de respuesta JSON
