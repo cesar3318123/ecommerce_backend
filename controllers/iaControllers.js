@@ -16,23 +16,25 @@ extrae solo una o dos palabras clave que describan exactamente lo que el usuario
 - No agregues explicación, puntuación, ni texto adicional.
 - No uses números, símbolos o conectores.
 - No generalices: si el usuario dice "galletas de avena", devuelve "galletas avena".
-- Si dice por ejemplo "productos sin cacao", no incluyas la palabra y manda solo productos, esto es un ejemplo, aplicalo en cualquier caso.
-- Si dice "bajo en azúcar", devuelve "sin azúcar".
+- Si dice por ejemplo el prompt "productos sin cacao", no incluyas la palabra y manda solo productos, esto es un ejemplo, aplicalo en cualquier caso.
+- Si dice "bajo en azúcar", devuelve "sin azúcar, esta es la unica expcepción a lo anterior".
 - Si dice "con 10g de proteína" o "alto en proteína", devuelve "proteína 10g" o "alta proteína".
 - Si no se especifica cantidad ni condición, devuelve solo el producto más relevante.
 Responde solo con las palabras clave.
+- Por favor todos los casos anteriores juntamente y da la mejor respuesta posible para que la API no se confunda.
 `);
 
 console.log("Primer filtro:", extrationlanguagenatural);
 
 const filtratedExtraction = await safeGenerateContentFromAI(`
 Del siguiente texto: "${extrationlanguagenatural}", y considerando el prompt original del usuario: "${prompt}",
-- Si dice sin cacao, sin gluten, sin lactosa, sin sal, sin grasas, etc, quita esas 2 palabras y manda lo que quede, la unica excepcion es sin azúcar, esa si la dejas.
-- Si dice "bajo en [nutriente]" o "menos de [cantidad]", usa el formato "[nutriente] lt [cantidad]".
-- Si dice "más de [cantidad]" o "alto en [nutriente]", usa el formato "[nutriente] gt [cantidad]".
+- Si el prompt dice sin cacao, sin gluten, sin lactosa, sin sal, sin grasas, etc, quita esas 2 palabras y manda lo que quede, la unica excepcion es sin azúcar, esa si la dejas.
+- Si dice el prompt "bajo en [nutriente]" o "menos de [cantidad]", usa el formato "[nutriente] lt [cantidad]".
+- Si dice el prompt "más de [cantidad]" o "alto en [nutriente]", usa el formato "[nutriente] gt [cantidad]".
 - Si no menciona cantidades, deja solo el producto principal (por ejemplo, "galletas avena").
 - Responde solo con 1, 2 o 3 palabras clave filtradas, segun lo que haya quedado y considerando las reglas.
 - No agregues explicación, puntuación, ni texto adicional, para que la API no se confunda.
+- Por favor considera todos los casos anteriores y da la mejor respuesta posible.
 
 `);
 
