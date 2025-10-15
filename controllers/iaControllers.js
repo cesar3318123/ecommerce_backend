@@ -60,7 +60,6 @@ Del siguiente texto: "${prompt}",
 
           // Limitar solo a los primeros 8 productos que tengan nombre e imagen
           const products = response2.data.products
-            .filter((p) => p.product_name && p.image_url)
             .slice(0, 8)
             .map((p) => ({
               id: p._id,
@@ -94,7 +93,6 @@ Del siguiente texto: "${prompt}",
           
           // Limitar solo a los primeros 8 productos que tengan nombre e imagen
           const products = response1.data.products
-            .filter((p) => p.product_name && p.image_url)
             .slice(0, 8)
             .map((p) => ({
               id: p._id,
@@ -198,7 +196,6 @@ Transforma la frase a palabras clave, considerando los siguientes casos:
 
           // Limitar solo a los primeros 8 productos que tengan nombre e imagen
           const products = response4.data.products
-            .filter((p) => p.product_name && p.image_url)
             .slice(0, 8)
             .map((p) => ({
               id: p._id,
@@ -233,7 +230,6 @@ Transforma la frase a palabras clave, considerando los siguientes casos:
 
           // Limitar solo a los primeros 8 productos que tengan nombre e imagen
           const products = response3.data.products
-            .filter((p) => p.product_name && p.image_url)
             .slice(0, 8)
             .map((p) => ({
               id: p._id,
