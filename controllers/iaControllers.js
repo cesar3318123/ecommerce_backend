@@ -14,6 +14,7 @@ const extractionStep1 = await safeGenerateContentFromAI(`
 Del siguiente texto: "${prompt}",
 - Borra lo que el usuario quiere que no tenga, por ejemplo productos sin maiz, deja nomas productos y quita maiz.
 - regresa la frase con los cambios, si no pide que no tenga algo, regresa la frase original.
+- No añadas nada de texto de mas, ni una introducción ni nada para que la API no se confunda.
 `);
 
 console.log("Primer filtro:", extractionStep1);
