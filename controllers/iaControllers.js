@@ -20,7 +20,7 @@ async function generateContent(req, res) {
               search_simple: 1, //Sirve para indicar que es una búsqueda simple
               action: "process", // Acción a realizar
               json: 1, // Formato de respuesta JSON
-              page_size: 100, // Número de resultados por página
+              page_size: 10, // Número de resultados por página
             },
             headers: {
               "User-Agent": "MiAppEcommerce/1.0 (wwww.cesar3318123@gmail.com)",
@@ -48,7 +48,7 @@ Del siguiente texto: "${prompt}",
                 search_simple: 1, //Sirve para indicar que es una búsqueda simple
                 action: "process", // Acción a realizar
                 json: 1, // Formato de respuesta JSON
-                page_size: 100, // Número de resultados por página
+                page_size: 10, // Número de resultados por página
               },
               headers: {
                 "User-Agent":
@@ -194,7 +194,7 @@ Transforma la frase a palabras clave, considerando los siguientes casos:
               search_simple: 1, //Sirve para indicar que es una búsqueda simple
               action: "process", // Acción a realizar
               json: 1, // Formato de respuesta JSON
-              page_size: 100, // Número de resultados por página
+              page_size: 10, // Número de resultados por página
             },
             headers: {
               "User-Agent": "MiAppEcommerce/1.0 (wwww.cesar3318123@gmail.com)",
@@ -217,7 +217,7 @@ Transforma la frase a palabras clave, considerando los siguientes casos:
                 search_simple: 1, //Sirve para indicar que es una búsqueda simple
                 action: "process", // Acción a realizar
                 json: 1, // Formato de respuesta JSON
-                page_size: 100, // Número de resultados por página
+                page_size: 10, // Número de resultados por página
               },
               headers: {
                 "User-Agent":
