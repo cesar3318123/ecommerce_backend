@@ -38,6 +38,7 @@ Del siguiente texto: "${prompt}",
 - Como mi API no logro entender, las palabras clave, traducelo a mejores palabras clave mas especificos para que la API lo entienda, osea se mas especifico
 - Solo 1 a 3 palabras como maximo.
 - No generes ningun texto de mas, ni una introducción, solo las palabras para que la API no se confunda
+
 `);
 
           const response2 = await axios.get(
@@ -146,7 +147,9 @@ Del siguiente texto: "${extractionStep2}",
 Transforma la frase a palabras clave, considerando los siguientes casos:
 - si menciona la cantidad de producto consideralo y devuelves el producto y la cantidad, 2 palabras.
 - si menciona "producto con" o palabras relacionadas, pones el producto y el otro ingrediente, 2 palabras.
+- Si espefica de algun lugar, regresa una palabra mas de alimento relacionada con ese lugar
 - No agregues texto ni nada mas, para que la API no se confunda.
+- solo regresa de 2 a 3 palabras segun los casos anteriores
 `);
 
         console.log("segundo filtro", extractionStep3);
