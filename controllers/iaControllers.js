@@ -145,7 +145,7 @@ Del siguiente texto: "${extractionStep2}",
 Transforma la frase a palabras clave, considerando los siguientes casos:
 - si menciona la cantidad de producto consideralo y devuelves el producto y la cantidad, 2 palabras.
 - si menciona "producto con" o palabras relacionadas, pones el producto y el otro ingrediente, 2 palabras.
-- Si espefica de algun lugar, regresa una palabra mas de alimento relacionada con ese lugar
+- Si espefica de algun lugar, regresa una palabra mas de alimento relacionada con ese lugar, como palomitas, refresco, etc.
 - No agregues texto ni nada mas, para que la API no se confunda.
 - solo regresa de 2 a 3 palabras segun los casos anteriores
 `);
@@ -168,64 +168,7 @@ Transforma la frase a palabras clave, considerando los siguientes casos:
           }
         );
 
-        if (!response3.data.products || response3.data.products.length === 0) {
-          const extrationstep4 =
-            await safeGenerateContentFromAI(`Del siguiente texto: "${prompt}",
-            - Como mi API no logro entender, las palabras clave, traducelo a mejores palabras clave mas especificos para que la API lo entienda, osea se mas especifico
-- Solo 1 a 3 palabras como maximo.
-- No generes ningun texto de mas, ni una introducción, solo las palabras para que la API no se confunda`);
-
-          const response4 = await axios.get(
-            `https://world.openfoodfacts.org/cgi/search.pl`,
-            {
-              params: {
-                search_terms: extrationstep4, // Término de búsqueda
-                search_simple: 1, //Sirve para indicar que es una búsqueda simple
-                action: "process", // Acción a realizar
-                json: 1, // Formato de respuesta JSON
-                page_size: 10, // Número de resultados por página
-              },
-              headers: {
-                "User-Agent":
-                  "MiAppEcommerce/1.0 (wwww.cesar3318123@gmail.com)",
-              },
-            }
-          );
-
-          
-
-          // Limitar solo a los primeros 8 productos que tengan nombre e imagen
-          const products = response4.data.products
-            .slice(0, 8)
-            .map((p) => ({
-              id: p._id,
-              nombre: p.product_name,
-              marca: p.brands,
-              imagen: p.image_url,
-            }));
-
-          // Preparar texto con productos para IA
-          let productListText = products
-            .slice(0, 10)
-            .map((p) => `- ${p.nombre || "Nombre no disponible"}`)
-            .join("\n");
-
-          if (!productListText.trim()) {
-            productListText = "No se encontraron productos relevantes.";
-          }
-
-          //Generar contenido con IA basado en Prompt y la lista de productos
-          const combinedPrompt = `El usuario pregunto: "${prompt}". Aqui hay una lista de productos relacionados:\n${productListText}\nPor favor, genera una descripción o recomendación por cada producto, inicia dando una introducción, recuerda, estas hablando con el cliente, no con el desarrollador, cada texto, incluyendo la introducción debe ser especificamente compuesto por maximo 60 tokens, dividelos usando el simbolo "#.#", solo divide descripcion e introducción, no titulos de los productos`; // Combinar el prompt del usuaario con la lista de productos
-
-          const aiResult = await safeGenerateContentFromAI(combinedPrompt);
-
-          // Responder con datos combinados
-
-          res.json({
-            products: products,
-            aiResult,
-          });
-        } else {
+      
           
 
           // Limitar solo a los primeros 8 productos que tengan nombre e imagen
@@ -259,7 +202,7 @@ Transforma la frase a palabras clave, considerando los siguientes casos:
             products: products,
             aiResult,
           });
-        }
+        
       } catch (error) {
         console.error(error);
         res.status(500).json({ error: "Error generando contenido" });
