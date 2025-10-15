@@ -25,7 +25,6 @@ console.log("Primer filtro:", extractionStep1);
 
 
 
-console.log("segundo filtro:", extractionStep2);
 
 
 
