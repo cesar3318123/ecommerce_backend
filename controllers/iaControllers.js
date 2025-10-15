@@ -12,18 +12,24 @@ async function generateContent(req, res) {
     // Usamos IA para aplicar lenguaje natural y obtener productos relacionados
 const extractionStep1 = await safeGenerateContentFromAI(`
 Del siguiente texto: "${prompt}",
-- traduce de lenguaje natural a palabras clave, tomando en cuenta las siguientes reglas:
-- Si manda palabras en el prompt, como "sin cacao", "sin naranja", o frases relacionadas, eliminas el ingrediente naranja, cacao, etc, no se mencionara en las palabras clave ese ingrediente, eliminalo.
-- Las unicas 2 excepciones al caso anterior son "sin azucar" y sin "lactosa", esas 2 si puedes implementarlas.
-- Si dice una cantidad de producto arriba de 0, la consideras totalmente.
-- Si dice medio, alto, y menciona el ingrediente despues, tambien consideralo.
-- Al final solo devolveras ciertas palabras clave considerando todos los casos anteriores, no explicaciones ni texto de mas, solo palabras clave.
-
-
-
+- Si menciona sin o palabras afines como "que no tenga" etc, borras las 2 palabras o ingredientes que salen despues de la frase.
+- Las unicas 2 excepciones son "sin lactosa" y "sin azucar", esas no las borres de la frase.
+- regresa la frase con los cambios realizados, si es que los hubo, si no, regresa el texto como originalmente esta.
 `);
 
 console.log("Primer filtro:", extractionStep1);
+
+//segundo filtro
+const extractionStep2 = await safeGenerateContentFromAI(`
+Del siguiente texto: "${extractionStep1}",
+Transforma la frase a palabras clave, considerando los siguientes casos:
+- si menciona la cantidad de producto consideralo y devuelves el producto y la cantidad, 2 palabras.
+- si menciona "producto con" o palabras relacionadas, pones el producto y el otro ingrediente, 2 palabras.
+- No agregues texto ni nada mas, para que la API no se confunda.
+`);
+
+
+console.log("segundo filtro", extractionStep2)
 
 
 
@@ -37,7 +43,7 @@ console.log("Primer filtro:", extractionStep1);
       `https://world.openfoodfacts.org/cgi/search.pl`,
       {
         params: {
-          search_terms: extractionStep1, // Término de búsqueda
+          search_terms: extractionStep2, // Término de búsqueda
           search_simple: 1, //Sirve para indicar que es una búsqueda simple
           action: "process", // Acción a realizar
           json: 1, // Formato de respuesta JSON
