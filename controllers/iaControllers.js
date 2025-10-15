@@ -13,11 +13,11 @@ async function generateContent(req, res) {
 const extractionStep1 = await safeGenerateContentFromAI(`
 Del siguiente texto: "${prompt}",
 - traduce de lenguaje natural a palabras clave, tomando en cuenta las siguientes reglas:
-- Si manda palabras en el prompt, como "sin cacao", "sin naranja", o frases relacionadas, eliminadas ese ingrediente.
+- Si manda palabras en el prompt, como "sin cacao", "sin naranja", o frases relacionadas, eliminas el ingrediente naranja, cacao, etc, no se mencionara en las palabras clave ese ingrediente, eliminalo.
 - Las unicas 2 excepciones al caso anterior son "sin azucar" y sin "lactosa", esas 2 si puedes implementarlas.
 - Si dice una cantidad de producto arriba de 0, la consideras totalmente.
 - Si dice medio, alto, y menciona el ingrediente despues, tambien consideralo.
-- Al final solo devolveras ciertas palabras clave, no explicaciones ni texto de mas, solo palabras clave.
+- Al final solo devolveras ciertas palabras clave considerando todos los casos anteriores, no explicaciones ni texto de mas, solo palabras clave.
 
 
 
