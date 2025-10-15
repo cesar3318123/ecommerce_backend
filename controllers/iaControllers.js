@@ -12,7 +12,7 @@ async function generateContent(req, res) {
       console.log("es una o 2 palabras");
 
       try {
-        const response = await axios.get(
+        const response1 = await axios.get(
           `https://world.openfoodfacts.org/cgi/search.pl`,
           {
             params: {
@@ -27,56 +27,138 @@ async function generateContent(req, res) {
             },
           }
         );
-        const keywords = prompt.split(" "); // Dividimos la consulta en palabras clave para filtrar los productos
-
-        //Aplicamos un filtro tradicional para obtener los productos
-        const filteredProducts = response.data.products.filter((p) => {
-          const name = p.product_name?.toLowerCase() || "";
-          const brand = p.brands?.toLowerCase() || "";
-          //return name.includes(query) || brand.includes(query); //Esta línea filtra los productos que contienen el término de búsqueda en el nombre o la marca
-          //Verificamos si alguna de las palabras clave está en el nombre o la marca del producto
-          return keywords.some(
-            (word) =>
-              name.includes(word.toLowerCase()) ||
-              brand.includes(word.toLowerCase())
+        // si no se encontro algun producto, aplicamos una condicional para que el lenguaje natural trate de entender mejor todo
+        if (!response1.data.products || response1.data.products.length === 0) {
+          console.log(
+            "no se encontro ningun producto, se genero un segundo filtro"
           );
-        });
+          // filtro
+          const extractionStep1 = await safeGenerateContentFromAI(`
+Del siguiente texto: "${prompt}",
+- Como mi API no logro entender, las palabras clave, traducelo a mejores palabras clave mas especificos para que la API lo entienda, osea se mas especifico
+- Solo 1 a 3 palabras como maximo.
+- No generes ningun texto de mas, ni una introducción, solo las palabras para que la API no se confunda
+`);
 
-        // Obtener productos válidos
-        const rawProducts = filteredProducts || [];
+          const response2 = await axios.get(
+            `https://world.openfoodfacts.org/cgi/search.pl`,
+            {
+              params: {
+                search_terms: extractionStep1, // Término de búsqueda
+                search_simple: 1, //Sirve para indicar que es una búsqueda simple
+                action: "process", // Acción a realizar
+                json: 1, // Formato de respuesta JSON
+                page_size: 100, // Número de resultados por página
+              },
+              headers: {
+                "User-Agent":
+                  "MiAppEcommerce/1.0 (wwww.cesar3318123@gmail.com)",
+              },
+            }
+          );
 
-        // Limitar solo a los primeros 8 productos que tengan nombre e imagen
-        const products = rawProducts
-          .filter((p) => p.product_name && p.image_url)
-          .slice(0, 8)
-          .map((p) => ({
-            id: p._id,
-            nombre: p.product_name,
-            marca: p.brands,
-            imagen: p.image_url,
-          }));
+          const keywords = extractionStep1.split(" "); // Dividimos la consulta en palabras clave para filtrar los productos
 
-        // Preparar texto con productos para IA
-        let productListText = products
-          .slice(0, 10)
-          .map((p) => `- ${p.nombre || "Nombre no disponible"}`)
-          .join("\n");
+          //Aplicamos un filtro tradicional para obtener los productos
+          const filteredProducts = response2.data.products.filter((p) => {
+            const name = p.product_name?.toLowerCase() || "";
+            const brand = p.brands?.toLowerCase() || "";
+            //return name.includes(query) || brand.includes(query); //Esta línea filtra los productos que contienen el término de búsqueda en el nombre o la marca
+            //Verificamos si alguna de las palabras clave está en el nombre o la marca del producto
+            return keywords.some(
+              (word) =>
+                name.includes(word.toLowerCase()) ||
+                brand.includes(word.toLowerCase())
+            );
+          });
 
-        if (!productListText.trim()) {
-          productListText = "No se encontraron productos relevantes.";
+          // Obtener productos válidos
+          const rawProducts = filteredProducts || [];
+
+          // Limitar solo a los primeros 8 productos que tengan nombre e imagen
+          const products = rawProducts
+            .filter((p) => p.product_name && p.image_url)
+            .slice(0, 8)
+            .map((p) => ({
+              id: p._id,
+              nombre: p.product_name,
+              marca: p.brands,
+              imagen: p.image_url,
+            }));
+
+          // Preparar texto con productos para IA
+          let productListText = products
+            .slice(0, 10)
+            .map((p) => `- ${p.nombre || "Nombre no disponible"}`)
+            .join("\n");
+
+          if (!productListText.trim()) {
+            productListText = "No se encontraron productos relevantes.";
+          }
+
+          //Generar contenido con IA basado en Prompt y la lista de productos
+          const combinedPrompt = `El usuario pregunto: "${prompt}". Aqui hay una lista de productos relacionados:\n${productListText}\nPor favor, genera una descripción o recomendación por cada producto, inicia dando una introducción, recuerda, estas hablando con el cliente, no con el desarrollador, cada texto, incluyendo la introducción debe ser especificamente compuesto por maximo 60 tokens, dividelos usando el simbolo "#.#", solo divide descripcion e introducción, no titulos de los productos`; // Combinar el prompt del usuaario con la lista de productos
+
+          const aiResult = await safeGenerateContentFromAI(combinedPrompt);
+
+          // Responder con datos combinados
+
+          res.json({
+            products: products,
+            aiResult,
+          });
+        } else {
+          const keywords = prompt.split(" "); // Dividimos la consulta en palabras clave para filtrar los productos
+
+          //Aplicamos un filtro tradicional para obtener los productos
+          const filteredProducts = response1.data.products.filter((p) => {
+            const name = p.product_name?.toLowerCase() || "";
+            const brand = p.brands?.toLowerCase() || "";
+            //return name.includes(query) || brand.includes(query); //Esta línea filtra los productos que contienen el término de búsqueda en el nombre o la marca
+            //Verificamos si alguna de las palabras clave está en el nombre o la marca del producto
+            return keywords.some(
+              (word) =>
+                name.includes(word.toLowerCase()) ||
+                brand.includes(word.toLowerCase())
+            );
+          });
+
+          // Obtener productos válidos
+          const rawProducts = filteredProducts || [];
+
+          // Limitar solo a los primeros 8 productos que tengan nombre e imagen
+          const products = rawProducts
+            .filter((p) => p.product_name && p.image_url)
+            .slice(0, 8)
+            .map((p) => ({
+              id: p._id,
+              nombre: p.product_name,
+              marca: p.brands,
+              imagen: p.image_url,
+            }));
+
+          // Preparar texto con productos para IA
+          let productListText = products
+            .slice(0, 10)
+            .map((p) => `- ${p.nombre || "Nombre no disponible"}`)
+            .join("\n");
+
+          if (!productListText.trim()) {
+            productListText = "No se encontraron productos relevantes.";
+          }
+
+          //Generar contenido con IA basado en Prompt y la lista de productos
+          const combinedPrompt = `El usuario pregunto: "${prompt}". Aqui hay una lista de productos relacionados:\n${productListText}\nPor favor, genera una descripción o recomendación por cada producto, inicia dando una introducción, recuerda, estas hablando con el cliente, no con el desarrollador, cada texto, incluyendo la introducción debe ser especificamente compuesto por maximo 60 tokens, dividelos usando el simbolo "#.#", solo divide descripcion e introducción, no titulos de los productos`; // Combinar el prompt del usuaario con la lista de productos
+
+          const aiResult = await safeGenerateContentFromAI(combinedPrompt);
+
+          // Responder con datos combinados
+
+          res.json({
+            products: products,
+            aiResult,
+          });
         }
-
-        //Generar contenido con IA basado en Prompt y la lista de productos
-        const combinedPrompt = `El usuario pregunto: "${prompt}". Aqui hay una lista de productos relacionados:\n${productListText}\nPor favor, genera una descripción o recomendación por cada producto, inicia dando una introducción, recuerda, estas hablando con el cliente, no con el desarrollador, cada texto, incluyendo la introducción debe ser especificamente compuesto por maximo 60 tokens, dividelos usando el simbolo "#.#", solo divide descripcion e introducción, no titulos de los productos`;  // Combinar el prompt del usuaario con la lista de productos
-
-        const aiResult = await safeGenerateContentFromAI(combinedPrompt);
-
-        // Responder con datos combinados
-
-        res.json({
-          products: products,
-          aiResult,
-        });
       } catch (error) {
         console.error(error);
         res.status(500).json({ error: "Error generando contenido" });
@@ -84,31 +166,31 @@ async function generateContent(req, res) {
     } else {
       try {
         // Usamos IA para aplicar lenguaje natural y obtener productos relacionados
-        const extractionStep1 = await safeGenerateContentFromAI(`
+        const extractionStep2 = await safeGenerateContentFromAI(`
 Del siguiente texto: "${prompt}",
 - Borra lo que el usuario quiere que no tenga, por ejemplo productos sin maiz, deja nomas productos y quita maiz.
 - regresa la frase con los cambios, si no pide que no tenga algo, regresa la frase original.
 - No añadas nada de texto de mas, ni una introducción ni nada para que la API no se confunda.
 `);
 
-        console.log("Primer filtro:", extractionStep1);
+        console.log("Primer filtro:", extractionStep2);
 
         //segundo filtro
-        const extractionStep2 = await safeGenerateContentFromAI(`
-Del siguiente texto: "${extractionStep1}",
+        const extractionStep3 = await safeGenerateContentFromAI(`
+Del siguiente texto: "${extractionStep2}",
 Transforma la frase a palabras clave, considerando los siguientes casos:
 - si menciona la cantidad de producto consideralo y devuelves el producto y la cantidad, 2 palabras.
 - si menciona "producto con" o palabras relacionadas, pones el producto y el otro ingrediente, 2 palabras.
 - No agregues texto ni nada mas, para que la API no se confunda.
 `);
 
-        console.log("segundo filtro", extractionStep2);
+        console.log("segundo filtro", extractionStep3);
 
-        const response = await axios.get(
+        const response3 = await axios.get(
           `https://world.openfoodfacts.org/cgi/search.pl`,
           {
             params: {
-              search_terms: extractionStep2, // Término de búsqueda
+              search_terms: extractionStep3, // Término de búsqueda
               search_simple: 1, //Sirve para indicar que es una búsqueda simple
               action: "process", // Acción a realizar
               json: 1, // Formato de respuesta JSON
@@ -120,56 +202,132 @@ Transforma la frase a palabras clave, considerando los siguientes casos:
           }
         );
 
-        const keywords = prompt.split(" "); // Dividimos la consulta en palabras clave para filtrar los productos
+        if (!response3.data.products || response3.data.products.length === 0) {
+          const extrationstep4 =
+            await safeGenerateContentFromAI(`Del siguiente texto: "${prompt}",
+            - Como mi API no logro entender, las palabras clave, traducelo a mejores palabras clave mas especificos para que la API lo entienda, osea se mas especifico
+- Solo 1 a 3 palabras como maximo.
+- No generes ningun texto de mas, ni una introducción, solo las palabras para que la API no se confunda`);
 
-        //Aplicamos un filtro tradicional para obtener los productos
-        const filteredProducts = response.data.products.filter((p) => {
-          const name = p.product_name?.toLowerCase() || "";
-          const brand = p.brands?.toLowerCase() || "";
-          //return name.includes(query) || brand.includes(query); //Esta línea filtra los productos que contienen el término de búsqueda en el nombre o la marca
-          //Verificamos si alguna de las palabras clave está en el nombre o la marca del producto
-          return keywords.some(
-            (word) =>
-              name.includes(word.toLowerCase()) ||
-              brand.includes(word.toLowerCase())
+          const response4 = await axios.get(
+            `https://world.openfoodfacts.org/cgi/search.pl`,
+            {
+              params: {
+                search_terms: extrationstep4, // Término de búsqueda
+                search_simple: 1, //Sirve para indicar que es una búsqueda simple
+                action: "process", // Acción a realizar
+                json: 1, // Formato de respuesta JSON
+                page_size: 100, // Número de resultados por página
+              },
+              headers: {
+                "User-Agent":
+                  "MiAppEcommerce/1.0 (wwww.cesar3318123@gmail.com)",
+              },
+            }
           );
-        });
 
-        // Obtener productos válidos
-        const rawProducts = filteredProducts || [];
+          const keywords = extrationstep4.split(" "); // Dividimos la consulta en palabras clave para filtrar los productos
 
-        // Limitar solo a los primeros 8 productos que tengan nombre e imagen
-        const products = rawProducts
-          .filter((p) => p.product_name && p.image_url)
-          .slice(0, 8)
-          .map((p) => ({
-            id: p._id,
-            nombre: p.product_name,
-            marca: p.brands,
-            imagen: p.image_url,
-          }));
+          //Aplicamos un filtro tradicional para obtener los productos
+          const filteredProducts = response4.data.products.filter((p) => {
+            const name = p.product_name?.toLowerCase() || "";
+            const brand = p.brands?.toLowerCase() || "";
+            //return name.includes(query) || brand.includes(query); //Esta línea filtra los productos que contienen el término de búsqueda en el nombre o la marca
+            //Verificamos si alguna de las palabras clave está en el nombre o la marca del producto
+            return keywords.some(
+              (word) =>
+                name.includes(word.toLowerCase()) ||
+                brand.includes(word.toLowerCase())
+            );
+          });
 
-        // Preparar texto con productos para IA
-        let productListText = products
-          .slice(0, 10)
-          .map((p) => `- ${p.nombre || "Nombre no disponible"}`)
-          .join("\n");
+          // Obtener productos válidos
+          const rawProducts = filteredProducts || [];
 
-        if (!productListText.trim()) {
-          productListText = "No se encontraron productos relevantes.";
+          // Limitar solo a los primeros 8 productos que tengan nombre e imagen
+          const products = rawProducts
+            .filter((p) => p.product_name && p.image_url)
+            .slice(0, 8)
+            .map((p) => ({
+              id: p._id,
+              nombre: p.product_name,
+              marca: p.brands,
+              imagen: p.image_url,
+            }));
+
+          // Preparar texto con productos para IA
+          let productListText = products
+            .slice(0, 10)
+            .map((p) => `- ${p.nombre || "Nombre no disponible"}`)
+            .join("\n");
+
+          if (!productListText.trim()) {
+            productListText = "No se encontraron productos relevantes.";
+          }
+
+          //Generar contenido con IA basado en Prompt y la lista de productos
+          const combinedPrompt = `El usuario pregunto: "${prompt}". Aqui hay una lista de productos relacionados:\n${productListText}\nPor favor, genera una descripción o recomendación por cada producto, inicia dando una introducción, recuerda, estas hablando con el cliente, no con el desarrollador, cada texto, incluyendo la introducción debe ser especificamente compuesto por maximo 60 tokens, dividelos usando el simbolo "#.#", solo divide descripcion e introducción, no titulos de los productos`; // Combinar el prompt del usuaario con la lista de productos
+
+          const aiResult = await safeGenerateContentFromAI(combinedPrompt);
+
+          // Responder con datos combinados
+
+          res.json({
+            products: products,
+            aiResult,
+          });
+        } else {
+          const keywords = extractionStep3.split(" "); // Dividimos la consulta en palabras clave para filtrar los productos
+
+          //Aplicamos un filtro tradicional para obtener los productos
+          const filteredProducts = response3.data.products.filter((p) => {
+            const name = p.product_name?.toLowerCase() || "";
+            const brand = p.brands?.toLowerCase() || "";
+            //return name.includes(query) || brand.includes(query); //Esta línea filtra los productos que contienen el término de búsqueda en el nombre o la marca
+            //Verificamos si alguna de las palabras clave está en el nombre o la marca del producto
+            return keywords.some(
+              (word) =>
+                name.includes(word.toLowerCase()) ||
+                brand.includes(word.toLowerCase())
+            );
+          });
+
+          // Obtener productos válidos
+          const rawProducts = filteredProducts || [];
+
+          // Limitar solo a los primeros 8 productos que tengan nombre e imagen
+          const products = rawProducts
+            .filter((p) => p.product_name && p.image_url)
+            .slice(0, 8)
+            .map((p) => ({
+              id: p._id,
+              nombre: p.product_name,
+              marca: p.brands,
+              imagen: p.image_url,
+            }));
+
+          // Preparar texto con productos para IA
+          let productListText = products
+            .slice(0, 10)
+            .map((p) => `- ${p.nombre || "Nombre no disponible"}`)
+            .join("\n");
+
+          if (!productListText.trim()) {
+            productListText = "No se encontraron productos relevantes.";
+          }
+
+          //Generar contenido con IA basado en Prompt y la lista de productos
+          const combinedPrompt = `El usuario pregunto: "${prompt}". Aqui hay una lista de productos relacionados:\n${productListText}\nPor favor, genera una descripción o recomendación por cada producto, inicia dando una introducción, recuerda, estas hablando con el cliente, no con el desarrollador, cada texto, incluyendo la introducción debe ser especificamente compuesto por maximo 60 tokens, dividelos usando el simbolo "#.#", solo divide descripcion e introducción, no titulos de los productos`; // Combinar el prompt del usuaario con la lista de productos
+
+          const aiResult = await safeGenerateContentFromAI(combinedPrompt);
+
+          // Responder con datos combinados
+
+          res.json({
+            products: products,
+            aiResult,
+          });
         }
-
-        //Generar contenido con IA basado en Prompt y la lista de productos
-        const combinedPrompt = `El usuario pregunto: "${prompt}". Aqui hay una lista de productos relacionados:\n${productListText}\nPor favor, genera una descripción o recomendación por cada producto, inicia dando una introducción, recuerda, estas hablando con el cliente, no con el desarrollador, cada texto, incluyendo la introducción debe ser especificamente compuesto por maximo 60 tokens, dividelos usando el simbolo "#.#", solo divide descripcion e introducción, no titulos de los productos`; // Combinar el prompt del usuaario con la lista de productos
-
-        const aiResult = await safeGenerateContentFromAI(combinedPrompt);
-
-        // Responder con datos combinados
-
-        res.json({
-          products: products,
-          aiResult,
-        });
       } catch (error) {
         console.error(error);
         res.status(500).json({ error: "Error generando contenido" });
