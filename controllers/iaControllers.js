@@ -12,24 +12,16 @@ async function generateContent(req, res) {
     // Usamos IA para aplicar lenguaje natural y obtener productos relacionados
 const extractionStep1 = await safeGenerateContentFromAI(`
 Del siguiente texto: "${prompt}",
-extrae únicamente las palabras más importantes que indiquen el producto o característica principal que el usuario busca en la API de Open Food Facts.
+extrae únicamente las 1 o 2 palabras más importantes que indiquen el producto o característica principal que el usuario busca en la API de Open Food Facts.
 - Ignora palabras de relleno como "quiero", "me gustaría", "busco", "dame", "muéstrame", "necesito".
 - Si dice "sin", "que no tenga" o "libre de", elimínalas junto con las 2 o 3 palabras relacionadas al ingrediente , por ejemplo si dice bebida sin naranja, que quede nomas la palabra bebida.
-- Si dice "bajo en", "alto en", "con", "contiene", "orgánico", "vegano", "natural", "integral", "light", "sin gluten", "sin lactosa", consérvalos, sin azucar, conservalos, estas son las unicas excepciones.
+- Si dice "bajo en", "alto en", "con", "contiene", "orgánico", "vegano", "natural", "integral", "light", "sin gluten", "sin lactosa", "sin azucar", conservalos, estas son las unicas excepciones-
+- Una cantidad como "400 gr" por ejemplo, tambien conservala.
 `);
 
 console.log("Primer filtro:", extractionStep1);
 
-const extractionStep2 = await safeGenerateContentFromAI(`
-Del siguiente texto: "${extractionStep1}",
-determina si la búsqueda corresponde a:
-- una inclusión ("con", "contiene", "hecho con"),
-- una cantidad o comparación ("bajo en", "alto en", "menos de", "más de"),
-- una etiqueta o característica ("vegano", "orgánico", "natural", "integral", "light", "sin gluten", "sin lactosa"),
-- o simplemente un producto o sabor ("galletas avena", "jugos naranja").
-Devuelve solo el tipo de búsqueda y las palabras principales relacionadas, sin explicaciones.  
-Máximo 3 palabras, si el texto es una sola palabra, manda esa misma palabra, pero si son 2 o 3, ya realizas el analisis anterior.
-`);
+
 
 
 
@@ -42,7 +34,7 @@ console.log("segundo filtro:", extractionStep2);
       `https://world.openfoodfacts.org/cgi/search.pl`,
       {
         params: {
-          search_terms: extractionStep2, // Término de búsqueda
+          search_terms: extractionStep1, // Término de búsqueda
           search_simple: 1, //Sirve para indicar que es una búsqueda simple
           action: "process", // Acción a realizar
           json: 1, // Formato de respuesta JSON
