@@ -37,35 +37,14 @@ Máximo 3 palabras.
 
 console.log("segundo filtro:", extractionStep2);
 
-const extractionStep3 = await safeGenerateContentFromAI(`
-Del siguiente texto: "${extractionStep2}",
-normaliza las palabras al formato lógico compatible con la API de Open Food Facts:
-- "sin [ingrediente]" → "ingredients does_not_contain [ingrediente]"
-- "con [ingrediente]" → "ingredients contains [ingrediente]"
-- "bajo en [nutriente]" o "menos de [cantidad]" → "nutriment lt [cantidad]"
-- "alto en [nutriente]" o "más de [cantidad]" → "nutriment gt [cantidad]"
-- "vegano" → "labels contains vegan"
-- "orgánico" → "labels contains organic"
-- "natural" → "labels contains natural"
-- "integral" → "labels contains wholegrain"
-- "light" → "labels contains light"
-- "sin gluten" → "labels contains gluten-free"
-- "sin lactosa" → "labels contains lactose-free"
-- Si no aplica ninguna de las anteriores, usa "product search [nombre]".
-No des explicaciones, solo el formato lógico en máximo 3 palabras.
-`);
 
-
-
-
-console.log("tercer filtro:", extractionStep3);
 
 
     const response = await axios.get(
       `https://world.openfoodfacts.org/cgi/search.pl`,
       {
         params: {
-          search_terms: extractionStep3, // Término de búsqueda
+          search_terms: extractionStep2, // Término de búsqueda
           search_simple: 1, //Sirve para indicar que es una búsqueda simple
           action: "process", // Acción a realizar
           json: 1, // Formato de respuesta JSON
