@@ -67,7 +67,7 @@ async function generateContent(req, res) {
         }
 
         //Generar contenido con IA basado en Prompt y la lista de productos
-        const combinedPrompt = `El usuario pregunto: "${prompt}". Aqui hay una lista de productos relacionados:\n${productListText}\nPor favor, genera una descripción o recomendación para estos productos, inicia dando una introducción, recuerda, estas hablando con el cliente, no con el desarrollador, cada texto, incluyendo la introducción debe ser especificamente compuesto por maximo 50 tokens, dividelos usando el simbolo "#.#".`; // Combinar el prompt del usuaario con la lista de productos
+        const combinedPrompt = `El usuario pregunto: "${prompt}". Aqui hay una lista de productos relacionados:\n${productListText}\nPor favor, genera una descripción o recomendación por cada producto, inicia dando una introducción, recuerda, estas hablando con el cliente, no con el desarrollador, cada texto, incluyendo la introducción debe ser especificamente compuesto por maximo 50 tokens, dividelos usando el simbolo "#.#".`; // Combinar el prompt del usuaario con la lista de productos
 
         const aiResult = await safeGenerateContentFromAI(combinedPrompt);
 
@@ -160,7 +160,7 @@ Transforma la frase a palabras clave, considerando los siguientes casos:
         }
 
         //Generar contenido con IA basado en Prompt y la lista de productos
-        const combinedPrompt = `El usuario pregunto: "${prompt}". Aqui hay una lista de productos relacionados:\n${productListText}\nPor favor, genera una descripción o recomendación para estos productos, inicia dando una introducción, recuerda, estas hablando con el cliente, no con el desarrollador, cada texto, incluyendo la introducción debe ser especificamente compuesto por maximo 50 tokens, dividelos usando el simbolo "#.#".`; // Combinar el prompt del usuaario con la lista de productos
+        const combinedPrompt = `El usuario pregunto: "${prompt}". Aqui hay una lista de productos relacionados:\n${productListText}\nPor favor, genera una descripción o recomendación por cada producto, inicia dando una introducción, recuerda, estas hablando con el cliente, no con el desarrollador, cada texto, incluyendo la introducción debe ser especificamente compuesto por maximo 50 tokens, dividelos usando el simbolo "#.#".`; // Combinar el prompt del usuaario con la lista de productos
 
         const aiResult = await safeGenerateContentFromAI(combinedPrompt);
 
