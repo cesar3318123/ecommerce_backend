@@ -168,7 +168,66 @@ Transforma la frase a palabras clave, considerando los siguientes casos:
           }
         );
 
-      
+        if (!response3.data.products || response3.data.products.length === 0) {
+
+          console.log("no logro entenderlo")
+          const extrationstep4 =
+            await safeGenerateContentFromAI(`Del siguiente texto: "${prompt}",
+            - Como mi API no logro entender, las palabras clave, traducelo a mejores palabras clave mas especificos para que la API lo entienda, osea se mas especifico
+            - Trata de decir otra palabras, como por ejemplo si dice comida, cine, tu mencionas palomitas, refresco, osea se mas especifico y dilo de forma diferente
+            - solo 2 o 3 palabras, nada mas, no digas ninguna introducción ni nada mas para que la API no se confunda`);
+
+          const response4 = await axios.get(
+            `https://world.openfoodfacts.org/cgi/search.pl`,
+            {
+              params: {
+                search_terms: extrationstep4, // Término de búsqueda
+                search_simple: 1, //Sirve para indicar que es una búsqueda simple
+                action: "process", // Acción a realizar
+                json: 1, // Formato de respuesta JSON
+                page_size: 10, // Número de resultados por página
+              },
+              headers: {
+                "User-Agent":
+                  "MiAppEcommerce/1.0 (wwww.cesar3318123@gmail.com)",
+              },
+            }
+          );
+
+          
+
+          // Limitar solo a los primeros 8 productos que tengan nombre e imagen
+          const products = response4.data.products
+            .slice(0, 8)
+            .map((p) => ({
+              id: p._id,
+              nombre: p.product_name,
+              marca: p.brands,
+              imagen: p.image_url,
+            }));
+
+          // Preparar texto con productos para IA
+          let productListText = products
+            .slice(0, 10)
+            .map((p) => `- ${p.nombre || "Nombre no disponible"}`)
+            .join("\n");
+
+          if (!productListText.trim()) {
+            productListText = "No se encontraron productos relevantes.";
+          }
+
+          //Generar contenido con IA basado en Prompt y la lista de productos
+          const combinedPrompt = `El usuario pregunto: "${prompt}". Aqui hay una lista de productos relacionados:\n${productListText}\nPor favor, genera una descripción o recomendación por cada producto, inicia dando una introducción, recuerda, estas hablando con el cliente, no con el desarrollador, cada texto, incluyendo la introducción debe ser especificamente compuesto por maximo 60 tokens, dividelos usando el simbolo "#.#", solo divide descripcion e introducción, no titulos de los productos`; // Combinar el prompt del usuaario con la lista de productos
+
+          const aiResult = await safeGenerateContentFromAI(combinedPrompt);
+
+          // Responder con datos combinados
+
+          res.json({
+            products: products,
+            aiResult,
+          });
+        } else {
           
 
           // Limitar solo a los primeros 8 productos que tengan nombre e imagen
@@ -202,7 +261,7 @@ Transforma la frase a palabras clave, considerando los siguientes casos:
             products: products,
             aiResult,
           });
-        
+        }
       } catch (error) {
         console.error(error);
         res.status(500).json({ error: "Error generando contenido" });
