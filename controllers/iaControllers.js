@@ -23,13 +23,12 @@ console.log("Primer filtro:", extractionStep1);
 const extractionStep2 = await safeGenerateContentFromAI(`
 Del siguiente texto: "${extractionStep1}",
 determina si la búsqueda corresponde a:
-- una exclusión ("sin", "libre de", "que no tenga"),
 - una inclusión ("con", "contiene", "hecho con"),
 - una cantidad o comparación ("bajo en", "alto en", "menos de", "más de"),
 - una etiqueta o característica ("vegano", "orgánico", "natural", "integral", "light", "sin gluten", "sin lactosa"),
 - o simplemente un producto o sabor ("galletas avena", "jugos naranja").
 Devuelve solo el tipo de búsqueda y las palabras principales relacionadas, sin explicaciones.  
-Máximo 3 palabras.
+Máximo 3 palabras, si el texto es una sola palabra, manda esa misma palabra, pero si son 2 o 3, ya realizas el analisis anterior.
 `);
 
 
