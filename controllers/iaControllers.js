@@ -14,9 +14,8 @@ const extractionStep1 = await safeGenerateContentFromAI(`
 Del siguiente texto: "${prompt}",
 extrae únicamente las palabras más importantes que indiquen el producto o característica principal que el usuario busca en la API de Open Food Facts.
 - Ignora palabras de relleno como "quiero", "me gustaría", "busco", "dame", "muéstrame", "necesito".
-- Si dice "sin", "que no tenga" o "libre de", elimínalas junto con las 2 o 3 palabras relacionadas al ingrediente (excepto "sin azúcar").
-- Conserva ingredientes, nutrientes o tipos de producto relevantes (ej: avena, jugo, chocolate, proteína, azúcar).
-- Si dice "bajo en", "alto en", "con", "contiene", "orgánico", "vegano", "natural", "integral", "light", "sin gluten", "sin lactosa", consérvalos.
+- Si dice "sin", "que no tenga" o "libre de", elimínalas junto con las 2 o 3 palabras relacionadas al ingrediente , por ejemplo si dice bebida sin naranja, que quede nomas la palabra bebida.
+- Si dice "bajo en", "alto en", "con", "contiene", "orgánico", "vegano", "natural", "integral", "light", "sin gluten", "sin lactosa", consérvalos, sin azucar, conservalos, estas son las unicas excepciones.
 `);
 
 console.log("Primer filtro:", extractionStep1);
