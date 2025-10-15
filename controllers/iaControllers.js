@@ -46,7 +46,7 @@ const products = rawProducts
       productListText = 'No se encontraron productos relevantes.';
     }
     //Generar contenido con IA basado en Prompt y la lista de productos
-    const combinedPrompt = `El usuario pregunto: "${prompt}". Aqui hay una lista de productos relacionados:\n${productListText}\nPor favor, genera una descripción o recomendación por cada producto, inicia dando una introducción, recuerda, estas hablando con el cliente, no con el desarrollador, cada texto, incluyendo la introducción debe ser especificamente compuesto por maximo 60 tokens, dividelos usando el simbolo "#.#", solo divide descripcion e introducción, no titulos de los productos`; // Combinar el prompt del usuaario con la lista de productos
+    const combinedPrompt = `El usuario pregunto: "${prompt}". Aqui hay una lista de productos relacionados:\n${productListText}\nPor favor, genera una descripción o recomendación por cada producto, inicia dando una introducción, recuerda, estas hablando con el cliente, no con el desarrollador, cada texto, incluyendo la introducción debe ser especificamente compuesto por maximo 60 tokens, dividelos usando el simbolo "#.#", solo divide cada descripcion de cada producto y la introducción que va al inicio, no titulos de los productos`; // Combinar el prompt del usuaario con la lista de productos
     const aiResult = await safeGenerateContentFromAI(combinedPrompt);
 
 
