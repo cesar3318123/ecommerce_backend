@@ -12,9 +12,8 @@ async function generateContent(req, res) {
     // Usamos IA para aplicar lenguaje natural y obtener productos relacionados
 const extractionStep1 = await safeGenerateContentFromAI(`
 Del siguiente texto: "${prompt}",
-- Si menciona sin o palabras afines como "que no tenga" etc, borras las 2 palabras o ingredientes que salen despues de la frase.
-- Las unicas 2 excepciones son "sin lactosa" y "sin azucar", esas no las borres de la frase.
-- regresa la frase con los cambios realizados, si es que los hubo, si no, regresa el texto como originalmente esta.
+- Borra lo que el usuario quiere que no tenga, por ejemplo productos sin maiz, deja nomas productos y quita maiz.
+- regresa la frase con los cambios, si no pide que no tenga algo, regresa la frase original.
 `);
 
 console.log("Primer filtro:", extractionStep1);
