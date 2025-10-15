@@ -175,7 +175,7 @@ Transforma la frase a palabras clave, considerando los siguientes casos:
             await safeGenerateContentFromAI(`Del siguiente texto: "${prompt}",
             - Como mi API no logro entender, las palabras clave, traducelo a mejores palabras clave mas especificos para que la API lo entienda, osea se mas especifico
             - Trata de decir otra palabras, como por ejemplo si dice comida, cine, tu mencionas palomitas, refresco, osea se mas especifico y dilo de forma diferente
-            - solo 2 o 3 palabras, nada mas, no digas ninguna introducción ni nada mas para que la API no se confunda`);
+            - solo 2 palabras, nada mas, no digas ninguna introducción ni nada mas para que la API no se confunda, ni asterisco ni nada`);
 
           const response4 = await axios.get(
             `https://world.openfoodfacts.org/cgi/search.pl`,
