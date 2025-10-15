@@ -57,26 +57,8 @@ Del siguiente texto: "${prompt}",
             }
           );
 
-          const keywords = extractionStep1.split(" "); // Dividimos la consulta en palabras clave para filtrar los productos
-
-          //Aplicamos un filtro tradicional para obtener los productos
-          const filteredProducts = response2.data.products.filter((p) => {
-            const name = p.product_name?.toLowerCase() || "";
-            const brand = p.brands?.toLowerCase() || "";
-            //return name.includes(query) || brand.includes(query); //Esta línea filtra los productos que contienen el término de búsqueda en el nombre o la marca
-            //Verificamos si alguna de las palabras clave está en el nombre o la marca del producto
-            return keywords.some(
-              (word) =>
-                name.includes(word.toLowerCase()) ||
-                brand.includes(word.toLowerCase())
-            );
-          });
-
-          // Obtener productos válidos
-          const rawProducts = filteredProducts || [];
-
           // Limitar solo a los primeros 8 productos que tengan nombre e imagen
-          const products = rawProducts
+          const products = response2.data.products
             .filter((p) => p.product_name && p.image_url)
             .slice(0, 8)
             .map((p) => ({
@@ -108,26 +90,9 @@ Del siguiente texto: "${prompt}",
             aiResult,
           });
         } else {
-          const keywords = prompt.split(" "); // Dividimos la consulta en palabras clave para filtrar los productos
-
-          //Aplicamos un filtro tradicional para obtener los productos
-          const filteredProducts = response1.data.products.filter((p) => {
-            const name = p.product_name?.toLowerCase() || "";
-            const brand = p.brands?.toLowerCase() || "";
-            //return name.includes(query) || brand.includes(query); //Esta línea filtra los productos que contienen el término de búsqueda en el nombre o la marca
-            //Verificamos si alguna de las palabras clave está en el nombre o la marca del producto
-            return keywords.some(
-              (word) =>
-                name.includes(word.toLowerCase()) ||
-                brand.includes(word.toLowerCase())
-            );
-          });
-
-          // Obtener productos válidos
-          const rawProducts = filteredProducts || [];
-
+          
           // Limitar solo a los primeros 8 productos que tengan nombre e imagen
-          const products = rawProducts
+          const products = response1.data.products
             .filter((p) => p.product_name && p.image_url)
             .slice(0, 8)
             .map((p) => ({
@@ -226,26 +191,10 @@ Transforma la frase a palabras clave, considerando los siguientes casos:
             }
           );
 
-          const keywords = extrationstep4.split(" "); // Dividimos la consulta en palabras clave para filtrar los productos
-
-          //Aplicamos un filtro tradicional para obtener los productos
-          const filteredProducts = response4.data.products.filter((p) => {
-            const name = p.product_name?.toLowerCase() || "";
-            const brand = p.brands?.toLowerCase() || "";
-            //return name.includes(query) || brand.includes(query); //Esta línea filtra los productos que contienen el término de búsqueda en el nombre o la marca
-            //Verificamos si alguna de las palabras clave está en el nombre o la marca del producto
-            return keywords.some(
-              (word) =>
-                name.includes(word.toLowerCase()) ||
-                brand.includes(word.toLowerCase())
-            );
-          });
-
-          // Obtener productos válidos
-          const rawProducts = filteredProducts || [];
+          
 
           // Limitar solo a los primeros 8 productos que tengan nombre e imagen
-          const products = rawProducts
+          const products = response4.data.products
             .filter((p) => p.product_name && p.image_url)
             .slice(0, 8)
             .map((p) => ({
@@ -277,26 +226,10 @@ Transforma la frase a palabras clave, considerando los siguientes casos:
             aiResult,
           });
         } else {
-          const keywords = extractionStep3.split(" "); // Dividimos la consulta en palabras clave para filtrar los productos
-
-          //Aplicamos un filtro tradicional para obtener los productos
-          const filteredProducts = response3.data.products.filter((p) => {
-            const name = p.product_name?.toLowerCase() || "";
-            const brand = p.brands?.toLowerCase() || "";
-            //return name.includes(query) || brand.includes(query); //Esta línea filtra los productos que contienen el término de búsqueda en el nombre o la marca
-            //Verificamos si alguna de las palabras clave está en el nombre o la marca del producto
-            return keywords.some(
-              (word) =>
-                name.includes(word.toLowerCase()) ||
-                brand.includes(word.toLowerCase())
-            );
-          });
-
-          // Obtener productos válidos
-          const rawProducts = filteredProducts || [];
+          
 
           // Limitar solo a los primeros 8 productos que tengan nombre e imagen
-          const products = rawProducts
+          const products = response3.data.products
             .filter((p) => p.product_name && p.image_url)
             .slice(0, 8)
             .map((p) => ({
