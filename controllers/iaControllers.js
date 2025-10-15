@@ -12,11 +12,15 @@ async function generateContent(req, res) {
     // Usamos IA para aplicar lenguaje natural y obtener productos relacionados
 const extractionStep1 = await safeGenerateContentFromAI(`
 Del siguiente texto: "${prompt}",
-extrae únicamente las 1 o 2 palabras más importantes que indiquen el producto o característica principal que el usuario busca en la API de Open Food Facts.
-- Ignora palabras de relleno como "quiero", "me gustaría", "busco", "dame", "muéstrame", "necesito".
-- Si dice "sin", "que no tenga" o "libre de", elimínalas junto con las 2 o 3 palabras relacionadas al ingrediente , por ejemplo si dice bebida sin naranja, que quede nomas la palabra bebida, por favor en todos los casos y similares, no hagas que si pongo bebida sin naranja, regreses sin naranja, y tampoco solamente naranja, lo correcto seria bebida, este es un ejemplo, pero tomalo en cuenta en todos los casos para que la API no se confunda.
-- Si dice "bajo en", "alto en", "con", "contiene", "orgánico", "vegano", "natural", "integral", "light", "sin gluten", "sin lactosa", "sin azucar", conservalos, estas son las unicas excepciones-
-- Una cantidad como "400 gr" por ejemplo, tambien conservala.
+- traduce de lenguaje natural a palabras clave, tomando en cuenta las siguientes reglas:
+- Si manda palabras en el prompt, como "sin cacao", "sin naranja", o frases relacionadas, eliminadas ese ingrediente.
+- Las unicas 2 excepciones al caso anterior son "sin azucar" y sin "lactosa", esas 2 si puedes implementarlas.
+- Si dice una cantidad de producto arriba de 0, la consideras totalmente.
+- Si dice medio, alto, y menciona el ingrediente despues, tambien consideralo.
+- Al final solo devolveras ciertas palabras clave, no explicaciones ni texto de mas, solo palabras clave.
+
+
+
 `);
 
 console.log("Primer filtro:", extractionStep1);
