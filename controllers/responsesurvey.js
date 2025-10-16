@@ -140,7 +140,7 @@ async function createPrueba3(req, res) {
     if (![1, 2, 3, 4, 5].includes(Number(confianza))) {
       return res.status(400).json({ error: 'Confianza debe estar entre 1 y 5' });
     }
-    if (![1, 2].includes(Number(volveria_usar))) {
+    if (![1, 2, 3, 4, 5].includes(Number(volveria_usar))) {
       return res.status(400).json({ error: 'Volvería a usar debe ser 1 (Sí) o 2 (No)' });
     }
     if (!['A', 'B'].includes(grupo)) {
